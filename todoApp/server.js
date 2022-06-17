@@ -1,11 +1,26 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+
+var db; //데이터 베이스를 저장하기 위한 변수
+const MongoClient = require('mongodb').MongoClient;
+MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/?retryWrites=true&w=majority', function (에러, client) {
+
+  db = client.db('todoapp'); //todoapp이라는 database에 연결함
+
+  db.collection('post').insertOne('저장할데이터', function (에러, 결과) {
+    console.log('저장완료');
+  });
+
+
+  app.listen(4040, function () {
+    console.log('lisening on 4040');
+  });
+})
+
 app.use(express.urlencoded({ extended: true }))
 
-app.listen(4040, function () {
-  console.log('lisening on 4040');
-});
+
 //서버를 띄우기 위한 기본 셋팅 (express라이브러리)
 // .listen(파라미터1, 파라미터2)
 // .listen(서버띄울 포트번호, 띄운 후 실행 할 코드)
@@ -39,3 +54,5 @@ app.post('/add', function (요청, 응답) {
   응답.send('전송완료')
   console.log(요청.body.title);
 });
+
+//DB저장 방법
