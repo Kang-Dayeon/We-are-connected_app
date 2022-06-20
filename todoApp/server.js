@@ -4,13 +4,16 @@ const bodyParser = require('body-parser');
 
 var db; //데이터 베이스를 저장하기 위한 변수
 const MongoClient = require('mongodb').MongoClient;
+
 MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/?retryWrites=true&w=majority', function (에러, client) {
 
   db = client.db('todoapp'); //todoapp이라는 database에 연결함
 
-  db.collection('post').insertOne('저장할데이터', function (에러, 결과) {
-    console.log('저장완료');
-  });
+  // db.collection('post').insertOne({ _id: 1, 이름: 'dy', 나이: 27 }, function (에러, 결과) {
+  //   console.log('저장완료');
+  // });
+  //insertOne()은 내가 저장할 데이터를 넣는 함수
+
 
 
   app.listen(4040, function () {
@@ -50,9 +53,16 @@ app.get('/write', function (요청, 응답) {
 //post요청 받기
 // 사용자가 /add 경로로 post요청하면 함수 실행해주세요
 // 요청을 쉽게 하기 위해 npm install body-parser 라이브러리 설치
-app.post('/add', function (요청, 응답) {
-  응답.send('전송완료')
-  console.log(요청.body.title);
-});
+// app.post('/add', function (요청, 응답) {
+//   console.log(요청.body);
+//   응답.send('전송완료')
+// });
 
 //DB저장 방법
+
+app.post('/add', function (요청, 응답) {
+  db.collection('post').insertOne({ _id: 3, title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
+    console.log('저장완료');
+  });
+  응답.send('전송완료')
+});
