@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+app.set('view engine', 'ejs');
+
 var db; //데이터 베이스를 저장하기 위한 변수
 const MongoClient = require('mongodb').MongoClient;
 
@@ -20,8 +22,8 @@ MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/?r
     console.log('lisening on 4040');
   });
 })
-
 app.use(express.urlencoded({ extended: true }))
+
 
 
 //서버를 띄우기 위한 기본 셋팅 (express라이브러리)
@@ -61,8 +63,16 @@ app.get('/write', function (요청, 응답) {
 //DB저장 방법
 
 app.post('/add', function (요청, 응답) {
-  db.collection('post').insertOne({ _id: 3, title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
+  db.collection('post').insertOne({ title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
     console.log('저장완료');
   });
   응답.send('전송완료')
+});
+
+app.get('/list', function (요청, 응답) {
+  db.collection('post').find().toArray(function (에러, 결과) {
+    console.log(결과);
+    응답.render('list.ejs', { posts: 결과 }); //랜더링해주는 문법
+  });
+
 });
