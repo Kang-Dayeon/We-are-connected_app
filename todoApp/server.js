@@ -7,7 +7,7 @@ app.set('view engine', 'ejs');
 var db; //데이터 베이스를 저장하기 위한 변수
 const MongoClient = require('mongodb').MongoClient;
 
-MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/?retryWrites=true&w=majority', function (에러, client) {
+MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/todoapp?retryWrites=true&w=majority', function (에러, client) {
 
   db = client.db('todoapp'); //todoapp이라는 database에 연결함
 
@@ -63,11 +63,21 @@ app.get('/write', function (요청, 응답) {
 //DB저장 방법
 
 app.post('/add', function (요청, 응답) {
-  db.collection('post').insertOne({ title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
-    console.log('저장완료');
-  });
   응답.send('전송완료')
+
+  db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
+    console.log(결과.totalPost);
+    var totalPost = 결과.totalPost;
+    db.collection('post').insertOne({ _id: totalPost + 1, title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
+      console.log('저장완료');
+      // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
+      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (에러, 결과) {
+        if (에러) { return console.log(에러) };
+      });
+    });
+  });
 });
+//auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
 app.get('/list', function (요청, 응답) {
   db.collection('post').find().toArray(function (에러, 결과) {
