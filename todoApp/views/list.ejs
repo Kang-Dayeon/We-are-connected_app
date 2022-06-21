@@ -38,20 +38,28 @@
   </nav>
 
   <!-- ejs 문법: <% %>여기 안은 자바스크립트 문법을 실행하는 곳임 -->
-  <% for (var i=0; i < posts.length; i++){ %>
-    <h4>
-      제목 : <%= posts[i].title %>
-    </h4>
-    <p>
-      내용 : <%= posts[i].text %>
-    </p>
-    <% } %>
+  <div class="container-md mt-5">
+    <h2 class="my-3">서버에서 가져온 To Do List</h2>
+    <ul class="list-group">
+      <% for (var i=0; i < posts.length; i++){ %>
+        <li class="list-group-item">
+          <h4>
+            제목 : <%= posts[i].title %>
+          </h4>
+          <p>
+            내용 : <%= posts[i].text %>
+          </p>
+          <button>삭제</button>
+        </li>
+        <% } %>
+    </ul>
+  </div>
 
 
-      <!-- JavaScript Bundle with Popper -->
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
