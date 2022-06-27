@@ -66,13 +66,18 @@
   <script>
     $(document).ready(function () {
       $('.delete').click(function (e) {
+        var postNum = e.target.dataset.id;
+        var 지금누른것 = $(this);
         $.ajax({
           method: 'DELETE',
           url: '/delete',
-          data: { _id: e.target.dataset.id }
+          data: { _id: postNum }
         }).done(function (결과) {
-          console.log(결과);
-        })
+          console.log('성공');
+          지금누른것.parent('li').fadeOut();
+        }).fail(function () {
+
+        });
       });
     });
 
