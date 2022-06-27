@@ -79,10 +79,18 @@ app.post('/add', function (요청, 응답) {
 });
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
+// db에서 데이터 받아서 list.ejs에 렌더링
 app.get('/list', function (요청, 응답) {
   db.collection('post').find().toArray(function (에러, 결과) {
-    console.log(결과);
+    // console.log(결과);
     응답.render('list.ejs', { posts: 결과 }); //랜더링해주는 문법
   });
-
 });
+
+app.delete('/delete', function (요청, 응답) {
+  var id = parseInt(요청.body._id)
+  db.collection('post').deleteOne(id, function (에러, 결과) {
+    console.log('삭제완료');
+  })
+
+})
