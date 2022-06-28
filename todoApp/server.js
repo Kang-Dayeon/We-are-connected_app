@@ -3,7 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 
 app.set('view engine', 'ejs');
-// css파일 사용하려면 밑에 코드 추가
+
+// css파일 사용하려면 밑에 코드 추가 = 미들웨어
 app.use('/public', express.static('public'));
 
 var db; //데이터 베이스를 저장하기 위한 변수
@@ -42,16 +43,24 @@ app.use(express.urlencoded({ extended: true }))
 //   응답.send('뷰티용품 쇼핑 페이지입니다💄');
 // });
 
+// app.get('/', function (요청, 응답) {
+//   응답.sendFile(__dirname + './view/index.ejs');
+// });
+
 app.get('/', function (요청, 응답) {
-  응답.sendFile(__dirname + '/index.html');
+  응답.render('index.ejs'); //랜더링해주는 문법
 });
 // '/'이렇게 슬레시가 하나인경우는 페이지 메인(홈)이라는 뜻임
 // .sendFile(보낼파일경로) 이게 html파일 보여주는 코드임
 // __dirname은 direction name의 줄임말임 현재 실행중이 폴더 경로를 뜻함
 // __filename 은 현재 실행중인 파일 경로를 뜻함
 
+// app.get('/write', function (요청, 응답) {
+//   응답.sendFile(__dirname + './view/write.ejs');
+// });
+
 app.get('/write', function (요청, 응답) {
-  응답.sendFile(__dirname + '/write.html');
+  응답.render('write.ejs'); //랜더링해주는 문법
 });
 
 //post요청 받기
@@ -66,12 +75,11 @@ app.get('/write', function (요청, 응답) {
 
 app.post('/add', function (요청, 응답) {
   응답.send('전송완료')
-
   db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
-    console.log(결과.totalPost);
+    // console.log(결과.totalPost);
     var totalPost = 결과.totalPost;
     db.collection('post').insertOne({ _id: totalPost + 1, title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
-      console.log('저장완료');
+      // console.log('저장완료');
       // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
       db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (에러, 결과) {
         if (에러) { return console.log(에러) };

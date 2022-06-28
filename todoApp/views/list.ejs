@@ -19,71 +19,50 @@
 
 <body>
 
+  <%- include('nav.html') %>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#"><i class="bi bi-pencil-square"></i> Todo App</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+
+    <!-- ejs 문법: <% %>여기 안은 자바스크립트 문법을 실행하는 곳임 -->
+    <div class="container-md mt-5">
+      <h2 class="fs-2 fw-bold text-success mb-3">To Do List</h2>
+      <ul class="list-group">
+        <% for (var i=0; i < posts.length; i++){ %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a class="detail-anchor" href="http://localhost:4040/detail/<%= posts[i]._id %>">
+              <h6 class="fs-5">
+                <%= posts[i].title %>
+              </h6>
+              <p class="fs-6">
+                <%= posts[i].text %>
+              </p>
+            </a>
+            <button class="btn btn-danger btn-sm delete" deta-id=" <%= posts[i]._id %> ">삭제</button>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="http://localhost:4040/write">Write</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="http://localhost:4040/List">List</a>
-          </li>
-        </ul>
-      </div>
+          <% } %>
+      </ul>
     </div>
-  </nav>
-
-  <!-- ejs 문법: <% %>여기 안은 자바스크립트 문법을 실행하는 곳임 -->
-  <div class="container-md mt-5">
-    <h2 class="my-3 fw-bold text-success mb-3">서버에서 가져온 To Do List</h2>
-    <ul class="list-group">
-      <% for (var i=0; i < posts.length; i++){ %>
-        <li class="list-group-item">
-          <a class="detail-anchor" href="http://localhost:4040/detail/<%= posts[i]._id %>">
-            <h4>
-              제목 : <%= posts[i].title %>
-            </h4>
-            <p>
-              내용 : <%= posts[i].text %>
-            </p>
-          </a>
-          <button class="btn btn-danger delete" deta-id=" <%= posts[i]._id %> ">삭제</button>
-        </li>
-        <% } %>
-    </ul>
-  </div>
 
 
 
 
 
 
-  <script>
-    $(document).ready(function () {
-      $('.delete').click(function (e) {
-        var postNum = e.target.dataset.id;
-        var 지금누른것 = $(this);
-        $.ajax({
-          method: 'DELETE',
-          url: '/delete',
-          data: { _id: postNum }
-        }).done(function (결과) {
-          지금누른것.parent('li').remove();
-        }).fail(function () {
-          alert("삭제 실패")
+    <script>
+      $(document).ready(function () {
+        $('.delete').click(function (e) {
+          var postNum = e.target.dataset.id;
+          var 지금누른것 = $(this);
+          $.ajax({
+            method: 'DELETE',
+            url: '/delete',
+            data: { _id: postNum }
+          }).done(function (결과) {
+            지금누른것.parent('li').remove();
+          }).fail(function () {
+            alert("삭제 실패")
+          });
         });
       });
-    });
 
     // ajax 기본 문법
     // $.ajax({
@@ -92,13 +71,13 @@
     //   data : '요청과 함께 보낼 데이터'
     // })
     // .fail : 요청 실패했을경우 사용
-  </script>
+    </script>
 
 
-  <!-- JavaScript Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-    crossorigin="anonymous"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"></script>
 
 </body>
 

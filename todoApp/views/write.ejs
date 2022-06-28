@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-
+  <title>Document</title>
   <!-- CSS only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
@@ -16,35 +15,24 @@
 </head>
 
 <body>
-
   <%- include('nav.html') %>
 
     <div class="container-md mt-5">
-      <h4 class="fw-bold text-success mb-3">상세페이지</h4>
-      <div class="card" style="width: 100%;">
-        <div class="card-body">
-          <h5 class="card-title">
-            <%= data.title %>
-          </h5>
-          <p class="card-text">
-            <%= data.text %>
-          </p>
-          <a href="#" class="card-link">수정하기</a>
+      <form action="/add" method="POST">
+        <!-- post 요청 방법 -->
+        <legend class="fs-2 fw-bold text-success mb-3">Todo List</legend>
+        <div class="mb-3">
+          <input placeholder="오늘의 할일" type="text" class="form-control shadow-sm bg-body rounded" id="exampleInputEmail1"
+            aria-describedby="emailHelp" name="title">
         </div>
-      </div>
+        <div class="mb-3">
+          <input type="text" placeholder="세부내용" class="form-control bg-body rounded p-2"
+            id="exampleFormControlTextarea1" name="formText"></input>
+        </div>
+        <button type="submit" class="btn btn-success">SAVE</button>
+      </form>
     </div>
 
-    <script>
-      $.ajax({
-        method: 'GET',
-        url: '/detail/:id'
-      }).done(function (결과) {
-        console.log(결과);
-      }).fail(function (xhr, textStatus, errorThrown) {
-        console.log(xhr, textStatus, errorThrown);
-        alert('없는 페이지 입니다')
-      });
-    </script>
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
