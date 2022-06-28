@@ -11,13 +11,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="./public/main.css">
+
 </head>
 
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-success">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Todo App</a>
+      <a class="navbar-brand" href="#"><i class="bi bi-pencil-square"></i> Todo App</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -28,20 +30,41 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Write</a>
+            <a class="nav-link" href="http://localhost:4040/write">Write</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">임시</a>
+            <a class="nav-link" href="http://localhost:4040/List">List</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <h2>상세페이지</h2>
-  <p>제목 : ??게시물의 data.title </p>
-  <p>날짜 : ??게시물의 data.날짜 </p>
+  <div class="container-md mt-5">
+    <h4 class="fw-bold text-success mb-3">상세페이지</h4>
+    <div class="card" style="width: 100%;">
+      <div class="card-body">
+        <h5 class="card-title">
+          <%= data.title %>
+        </h5>
+        <p class="card-text">
+          <%= data.text %>
+        </p>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    $.ajax({
+      method: 'GET',
+      url: '/detail/:id'
+    }).done(function (결과) {
+      console.log(결과);
+    }).fail(function (xhr, textStatus, errorThrown) {
+      console.log(xhr, textStatus, errorThrown);
+      alert('없는 페이지 입니다')
+    });
+  </script>
 
   <!-- JavaScript Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"

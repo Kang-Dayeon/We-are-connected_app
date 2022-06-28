@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 
 app.set('view engine', 'ejs');
+// css파일 사용하려면 밑에 코드 추가
+app.use('/public', express.static('public'));
 
 var db; //데이터 베이스를 저장하기 위한 변수
 const MongoClient = require('mongodb').MongoClient;
@@ -90,9 +92,8 @@ app.get('/list', function (요청, 응답) {
 app.delete('/delete', function (요청, 응답) {
   요청.body._id = parseInt(요청.body._id)
   db.collection('post').deleteOne(요청.body._id, function (에러, 결과) {
-    console.log('삭제완료');
     응답.status(200).send({ message: '성공' });
-    응답.status(400);
+    // 응답.status(400);
   });
   // 응답.send('삭제완료');
 });
@@ -100,7 +101,9 @@ app.delete('/delete', function (요청, 응답) {
 
 app.get('/detail/:id', function (요청, 응답) {
   db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    console.log(결과);
     응답.render('detail.ejs', { data: 결과 })
+    if (에러) {
+      응답.status(500).send({ message: '실패' });
+    }
   });
 });

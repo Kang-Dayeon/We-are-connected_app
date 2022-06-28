@@ -11,6 +11,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="./public/main.css">
+
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
 </head>
@@ -18,10 +20,9 @@
 <body>
 
 
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-success">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Todo App</a>
+      <a class="navbar-brand" href="#"><i class="bi bi-pencil-square"></i> Todo App</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -32,10 +33,10 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Write</a>
+            <a class="nav-link" href="http://localhost:4040/write">Write</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">임시</a>
+            <a class="nav-link" href="http://localhost:4040/List">List</a>
           </li>
         </ul>
       </div>
@@ -44,21 +45,25 @@
 
   <!-- ejs 문법: <% %>여기 안은 자바스크립트 문법을 실행하는 곳임 -->
   <div class="container-md mt-5">
-    <h2 class="my-3">서버에서 가져온 To Do List</h2>
+    <h2 class="my-3 fw-bold text-success mb-3">서버에서 가져온 To Do List</h2>
     <ul class="list-group">
       <% for (var i=0; i < posts.length; i++){ %>
         <li class="list-group-item">
-          <h4>
-            제목 : <%= posts[i].title %>
-          </h4>
-          <p>
-            내용 : <%= posts[i].text %>
-          </p>
+          <a class="detail-anchor" href="http://localhost:4040/detail/<%= posts[i]._id %>">
+            <h4>
+              제목 : <%= posts[i].title %>
+            </h4>
+            <p>
+              내용 : <%= posts[i].text %>
+            </p>
+          </a>
           <button class="btn btn-danger delete" deta-id=" <%= posts[i]._id %> ">삭제</button>
         </li>
         <% } %>
     </ul>
   </div>
+
+
 
 
 
@@ -73,7 +78,6 @@
           url: '/delete',
           data: { _id: postNum }
         }).done(function (결과) {
-          console.log('성공');
           지금누른것.parent('li').remove();
         }).fail(function () {
           alert("삭제 실패")
@@ -87,6 +91,7 @@
     //   url : '요청할 경로',
     //   data : '요청과 함께 보낼 데이터'
     // })
+    // .fail : 요청 실패했을경우 사용
   </script>
 
 
