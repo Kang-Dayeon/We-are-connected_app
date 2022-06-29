@@ -18,16 +18,17 @@
   <%- include('nav.html') %>
 
     <div class="container-md mt-5">
-      <form action="/write" method="POST">
+      <form action="/edit?_method=PUT" method="POST">
         <!-- post 요청 방법 -->
         <legend class="fs-2 fw-bold text-success mb-3">Todo List</legend>
+        <input type="text" value="<%= data._id %>" name="id" style="display: none;">
         <div class="mb-3">
           <input placeholder="오늘의 할일" type="text" class="form-control shadow-sm bg-body rounded" id="exampleInputEmail1"
-            aria-describedby="emailHelp" name="title">
+            aria-describedby="emailHelp" name="title" value="<%= data.title %>">
         </div>
         <div class="mb-3">
           <input type="text" placeholder="세부내용" class="form-control bg-body rounded p-2"
-            id="exampleFormControlTextarea1" name="formText"></input>
+            id="exampleFormControlTextarea1" name="formText" value="<%= data.text %>"></input>
         </div>
         <button type="submit" class="btn btn-success">SAVE</button>
       </form>

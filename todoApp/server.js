@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+// method-override사용
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'))
+
 app.set('view engine', 'ejs');
 
 // css파일 사용하려면 밑에 코드 추가 = 미들웨어
@@ -73,8 +77,7 @@ app.get('/write', function (요청, 응답) {
 
 //DB저장 방법
 
-app.post('/add', function (요청, 응답) {
-  응답.send('전송완료')
+app.post('/write', function (요청, 응답) {
   db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
     // console.log(결과.totalPost);
     var totalPost = 결과.totalPost;
@@ -86,6 +89,7 @@ app.post('/add', function (요청, 응답) {
       });
     });
   });
+  응답.redirect('/list');
 });
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
@@ -115,3 +119,17 @@ app.get('/detail/:id', function (요청, 응답) {
     }
   });
 });
+
+app.get('/edit/:id', function (요청, 응답) {
+  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
+    응답.render('edit.ejs', { data: 결과 })
+    응답.render('detail.ejs', { data: 결과 })
+  })
+})
+
+app.put('/edit', function (요청, 응답) {
+  db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
+    console.log('수정완료');
+    응답.redirect('/list');
+  })
+})
