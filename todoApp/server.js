@@ -151,6 +151,19 @@ app.post('/login', passport.authenticate('local', {
   응답.redirect('/')
 });
 
+app.get('/mypage', 로그인했니, function (요청, 응답) {
+  응답.render('mypage.ejs')
+});
+
+// 미들웨어 만들기
+function 로그인했니(요청, 응답, next) {
+  if (요청.user) {
+    next()
+  } else {
+    응답.send('로그인 안했음')
+  }
+}
+
 passport.use(new LocalStrategy({
   usernameField: 'id',
   passwordField: 'pw',
@@ -169,3 +182,10 @@ passport.use(new LocalStrategy({
     }
   })
 }));
+// done(서버에러, 성공시사용자DB데이터, 콜백함수) : 세개의 파라미터를 가짐
+passport.serializeUser(function (user, done) {
+  done(null, user.id)
+});
+passport.deserializeUser(function (아이디, done) {
+  done(null, {})
+});
