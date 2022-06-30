@@ -20,21 +20,15 @@ const MongoClient = require('mongodb').MongoClient;
 MongoClient.connect(process.env.DB_URL, function (에러, client) {
 
   db = client.db('todoapp'); //todoapp이라는 database에 연결함
-
   // db.collection('post').insertOne({ _id: 1, 이름: 'dy', 나이: 27 }, function (에러, 결과) {
   //   console.log('저장완료');
   // });
   //insertOne()은 내가 저장할 데이터를 넣는 함수
-
-
-
   app.listen(4040, function () {
     console.log('lisening on 4040');
   });
 })
 app.use(express.urlencoded({ extended: true }))
-
-
 
 
 
@@ -96,6 +90,16 @@ app.post('/write', function (요청, 응답) {
   응답.redirect('/list');
 });
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
+
+// 검색기능 get요청으로 불러오기
+app.get('/search', (요청, 응답) => {
+  console.log(요청.query.value);
+  db.collection('post').find({ title: 요청.query.value }).toArray((에러, 결과) => {
+    console.log(결과);
+    응답.render('result.ejs', { posts: 결과 })
+  })
+})
+
 
 // db에서 데이터 받아서 list.ejs에 렌더링
 app.get('/list', function (요청, 응답) {

@@ -52,38 +52,8 @@
 
 
     <script>
-      $(document).ready(function () {
-        $('.delete').click(function (e) {
-          var postNum = e.target.dataset.id;
-          var 지금누른것 = $(this);
-          $.ajax({
-            method: 'DELETE',
-            url: '/delete',
-            data: { _id: postNum }
-          }).done(function (결과) {
-            지금누른것.parent('li').remove();
-          }).fail(function () {
-            alert("삭제 실패")
-          });
-        });
-
-        $('#search').click(function () {
-          var inputVal = $("#searchInput").val();
-          window.location.replace('/search?value=' + inputVal)
-        });
 
 
-
-      });
-      // window.location.replace('url') : url을 바꿔주는 문법
-
-    // ajax 기본 문법
-    // $.ajax({
-    //   method : 'DELETE',
-    //   url : '요청할 경로',
-    //   data : '요청과 함께 보낼 데이터'
-    // })
-    // .fail : 요청 실패했을경우 사용
     </script>
 
 
