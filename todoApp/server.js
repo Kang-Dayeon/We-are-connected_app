@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override')
 app.use(methodOverride('_method'))
 
+// 환경변수 설정
+require('dotenv').config()
+
 app.set('view engine', 'ejs');
 
 // css파일 사용하려면 밑에 코드 추가 = 미들웨어
@@ -14,7 +17,7 @@ app.use('/public', express.static('public'));
 var db; //데이터 베이스를 저장하기 위한 변수
 const MongoClient = require('mongodb').MongoClient;
 
-MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/todoapp?retryWrites=true&w=majority', function (에러, client) {
+MongoClient.connect(process.env.DB_URL, function (에러, client) {
 
   db = client.db('todoapp'); //todoapp이라는 database에 연결함
 
@@ -30,6 +33,8 @@ MongoClient.connect('mongodb+srv://dykang:diak4428@cluster0.6n3fc.mongodb.net/to
   });
 })
 app.use(express.urlencoded({ extended: true }))
+
+
 
 
 
