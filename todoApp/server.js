@@ -157,7 +157,8 @@ app.post('/login', passport.authenticate('local', {
 });
 
 app.get('/mypage', 로그인했니, function (요청, 응답) {
-  응답.render('mypage.ejs')
+  console.log(요청.user);
+  응답.render('mypage.ejs', { 사용자: 요청.user })
 });
 
 // 미들웨어 만들기
@@ -192,5 +193,8 @@ passport.serializeUser(function (user, done) {
   done(null, user.id)
 });
 passport.deserializeUser(function (아이디, done) {
-  done(null, {})
+  db.collection('login').findOne({ id: 아이디 }, function (에러, 결과) {
+    done(null, 결과)
+  })
 });
+// deserializeUser() : 로그인한 유저의 세션아이디를 바탕으로 개인정보를 DB에서 찾는 역할
