@@ -53,6 +53,10 @@
 
     <script>
 
+      $('#search').click(function () {
+        var inputVal = $("#searchInput").val();
+        window.location.replace('/search?value=' + inputVal)
+      });
 
     </script>
 

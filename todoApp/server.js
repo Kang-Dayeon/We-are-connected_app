@@ -96,18 +96,17 @@ app.get('/search', (요청, 응답) => {
   var 검색조건 = [
     {
       $search: {
-        index: 'titleSearch',
+        index: 'titleSearch',
         text: {
           query: 요청.query.value,
-          path: "title"
+          path: {
+            'wildcard': '*'
+          }
         }
       }
-    },
-    {
-      $sort: { _id: 1 }
     }
-  ];
-  console.log(요청.query.value);
+  ]
+  // console.log(요청.query.value);
   db.collection('post').aggregate(검색조건).toArray((에러, 결과) => {
     console.log(결과);
     응답.render('result.ejs', { posts: 결과 })
