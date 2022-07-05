@@ -93,8 +93,22 @@ app.post('/write', function (요청, 응답) {
 
 // 검색기능 get요청으로 불러오기
 app.get('/search', (요청, 응답) => {
+  var 검색조건 = [
+    {
+      $search: {
+        index: 'titleSearch',
+        text: {
+          query: 요청.query.value,
+          path: "title"
+        }
+      }
+    },
+    {
+      $sort: { _id: 1 }
+    }
+  ];
   console.log(요청.query.value);
-  db.collection('post').find({ title: 요청.query.value }).toArray((에러, 결과) => {
+  db.collection('post').aggregate(검색조건).toArray((에러, 결과) => {
     console.log(결과);
     응답.render('result.ejs', { posts: 결과 })
   })
@@ -112,10 +126,9 @@ app.get('/list', function (요청, 응답) {
 app.delete('/delete', function (요청, 응답) {
   요청.body._id = parseInt(요청.body._id)
   db.collection('post').deleteOne(요청.body._id, function (에러, 결과) {
-    응답.status(200).send({ message: '성공' });
-    // 응답.status(400);
+    console.log('삭제완료');
   });
-  // 응답.send('삭제완료');
+  응답.send('삭제완료');
 });
 
 

@@ -72,6 +72,16 @@
           window.location.replace('/search?value=' + inputVal)
         });
 
+        // query string이란
+        // get요청시 서버로 데이터를 전해주는 것이다 .? 뒤에 정보를 입력하면 된다
+        // 형식 : 데이터이름1=데이터값1&데이터이름2=데이터값2
+
+        // query string 만들때
+        // var 자료 = { 이름: '값', 이름2 : '값2'}
+        // $.param(자료)
+        // 이런식으로 만들면 query string으로 변환 할 수 있다
+        // $(폼태그).serielize()
+        // 이런식으로 폼태그도 활용 가능한데 input태그 안에 name속성이 있어야함
 
 
       });
