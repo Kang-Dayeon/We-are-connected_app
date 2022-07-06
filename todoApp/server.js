@@ -221,11 +221,13 @@ app.post('/write', function (요청, 응답) {
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
 app.delete('/delete', function (요청, 응답) {
+  // ajax로 보내준 데이터임
+  console.log(요청.body);
   요청.body._id = parseInt(요청.body._id)
   var 삭제데이터 = { _id: 요청.body._id, user: 요청.user._id }
-  db.collection('post').deleteOne(삭제데이터, function (에러, 결과) {
+  db.collection('post').deleteOne(요청.body, function (에러, 결과) {
     if (결과) { console.log(에러); }
     console.log('삭제완료');
   });
-  응답.send('삭제완료');
+  // 응답.send('삭제완료');
 });
