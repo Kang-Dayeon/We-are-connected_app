@@ -74,22 +74,6 @@ app.get('/write', function (요청, 응답) {
 //   응답.send('전송완료')
 // });
 
-//DB저장 방법
-app.post('/write', function (요청, 응답) {
-  db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
-    // console.log(결과.totalPost);
-    var totalPost = 결과.totalPost;
-    db.collection('post').insertOne({ _id: totalPost + 1, title: 요청.body.title, text: 요청.body.formText }, function (에러, 결과) {
-      // console.log('저장완료');
-      // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
-      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (에러, 결과) {
-        if (에러) { return console.log(에러) };
-      });
-    });
-  });
-  응답.redirect('/list');
-});
-//auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
 // 검색기능 get요청으로 불러오기
 app.get('/search', (요청, 응답) => {
@@ -122,13 +106,7 @@ app.get('/list', function (요청, 응답) {
   });
 });
 
-app.delete('/delete', function (요청, 응답) {
-  요청.body._id = parseInt(요청.body._id)
-  db.collection('post').deleteOne(요청.body._id, function (에러, 결과) {
-    console.log('삭제완료');
-  });
-  응답.send('삭제완료');
-});
+
 
 
 app.get('/detail/:id', function (요청, 응답) {
@@ -214,3 +192,40 @@ passport.deserializeUser(function (아이디, done) {
   })
 });
 // deserializeUser() : 로그인한 유저의 세션아이디를 바탕으로 개인정보를 DB에서 찾는 역할
+
+// 회원가입 기능
+app.post('/register', function (요청, 응답) {
+  db.collection('login').insertOne({ id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
+    응답.redirect('/')
+  })
+})
+
+
+//DB저장 방법
+app.post('/write', function (요청, 응답) {
+
+  db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
+    // console.log(결과.totalPost);
+    var totalPost = 결과.totalPost;
+    var userInfo = { _id: totalPost + 1, title: 요청.body.title, text: 요청.body.formText, user: 요청.user._id };
+    db.collection('post').insertOne(userInfo, function (에러, 결과) {
+      // console.log('저장완료');
+      // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
+      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (에러, 결과) {
+        if (에러) { return console.log(에러) };
+      });
+    });
+  });
+  응답.redirect('/list');
+});
+//auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
+
+app.delete('/delete', function (요청, 응답) {
+  요청.body._id = parseInt(요청.body._id)
+  var 삭제데이터 = { _id: 요청.body._id, user: 요청.user._id }
+  db.collection('post').deleteOne(삭제데이터, function (에러, 결과) {
+    if (결과) { console.log(에러); }
+    console.log('삭제완료');
+  });
+  응답.send('삭제완료');
+});
