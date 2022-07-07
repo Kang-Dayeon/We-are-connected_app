@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
+// 로그인관련
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const session = require('express-session')
 
 // method-override사용
 const methodOverride = require('method-override')
@@ -13,132 +18,71 @@ app.set('view engine', 'ejs');
 
 // css파일 사용하려면 밑에 코드 추가 = 미들웨어
 app.use('/public', express.static('public'));
-
-var db; //데이터 베이스를 저장하기 위한 변수
-const MongoClient = require('mongodb').MongoClient;
-
-MongoClient.connect(process.env.DB_URL, function (에러, client) {
-
-  db = client.db('todoapp'); //todoapp이라는 database에 연결함
-  // db.collection('post').insertOne({ _id: 1, 이름: 'dy', 나이: 27 }, function (에러, 결과) {
-  //   console.log('저장완료');
-  // });
-  //insertOne()은 내가 저장할 데이터를 넣는 함수
-  app.listen(4040, function () {
-    console.log('lisening on 4040');
-  });
-})
 app.use(express.urlencoded({ extended: true }))
 
+// 로그인관련
+app.use(session({ secret: '비밀코드', resave: true, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
+var db; //데이터 베이스를 저장하기 위한 변수
 
-//서버를 띄우기 위한 기본 셋팅 (express라이브러리)
-// .listen(파라미터1, 파라미터2)
-// .listen(서버띄울 포트번호, 띄운 후 실행 할 코드)
-
-//예제
-//누군가 '/pet'으로 방문하면 pet관련 안내문 띄우기
-// app.get('/pet', function (요청, 응답) {
-//   응답.send('펫용품 사이트 입니다🐶');
-// });
-
-// app.get('/beauty', function (요청, 응답) {
-//   응답.send('뷰티용품 쇼핑 페이지입니다💄');
-// });
-
-// app.get('/', function (요청, 응답) {
-//   응답.sendFile(__dirname + './view/index.ejs');
-// });
-
-app.get('/', function (요청, 응답) {
-  응답.render('index.ejs'); //랜더링해주는 문법
-});
-// '/'이렇게 슬레시가 하나인경우는 페이지 메인(홈)이라는 뜻임
-// .sendFile(보낼파일경로) 이게 html파일 보여주는 코드임
-// __dirname은 direction name의 줄임말임 현재 실행중이 폴더 경로를 뜻함
-// __filename 은 현재 실행중인 파일 경로를 뜻함
-
-// app.get('/write', function (요청, 응답) {
-//   응답.sendFile(__dirname + './view/write.ejs');
-// });
-
-app.get('/write', function (요청, 응답) {
-  응답.render('write.ejs'); //랜더링해주는 문법
-});
-
-//post요청 받기
-// 사용자가 /add 경로로 post요청하면 함수 실행해주세요
-// 요청을 쉽게 하기 위해 npm install body-parser 라이브러리 설치
-// app.post('/add', function (요청, 응답) {
-//   console.log(요청.body);
-//   응답.send('전송완료')
-// });
-
-
-// 검색기능 get요청으로 불러오기
-app.get('/search', (요청, 응답) => {
-  var 검색조건 = [
-    {
-      $search: {
-        index: 'titleSearch',
-        text: {
-          query: 요청.query.value,
-          path: {
-            'wildcard': '*'
-          }
-        }
-      }
-    }
-  ]
-  // console.log(요청.query.value);
-  db.collection('post').aggregate(검색조건).toArray((에러, 결과) => {
-    console.log(결과);
-    응답.render('result.ejs', { posts: 결과 })
-  })
+MongoClient.connect(process.env.DB_URL, function (에러, client) {
+  //todoapp이라는 database에 연결함
+  db = client.db('todoapp');
+  app.listen(8080, function () {
+    console.log('lisening on 8080');
+  });
 })
 
 
+app.get('/', function (요청, 응답) {
+  응답.render('index.ejs');
+});
+app.get('/write', function (요청, 응답) {
+  응답.render('write.ejs');
+});
 // db에서 데이터 받아서 list.ejs에 렌더링
 app.get('/list', function (요청, 응답) {
   db.collection('post').find().toArray(function (에러, 결과) {
-    console.log(결과);
     응답.render('list.ejs', { posts: 결과 }); //랜더링해주는 문법
   });
 });
 
+// 이미지 업로드 기능 -> npm install multer
+let multer = require('multer');
 
+var path = require('path');
 
-
-app.get('/detail/:id', function (요청, 응답) {
-  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    응답.render('detail.ejs', { data: 결과 })
-    if (에러) {
-      응답.status(500).send({ message: '실패' });
-    }
-  });
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/image')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({
+  storage: storage,
+  // fileFilter: function (req, file, callback) {
+  //   var ext = path.extname(file.originalname);
+  //   if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+  //     return callback(new Error('PNG, JPG만 업로드하세요'))
+  //   }
+  //   callback(null, true)
+  // },
 });
 
-app.get('/edit/:id', function (요청, 응답) {
-  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    응답.render('edit.ejs', { data: 결과 })
-    응답.render('detail.ejs', { data: 결과 })
-  })
+app.get('/upload', function (요청, 응답) {
+  응답.render('upload.ejs');
+});
+app.post('/upload', upload.single('frofile'), function (요청, 응답) {
+  응답.send('저장완료');
+});
+app.get('/image/:imagename', function (요청, 응답) {
+  응답.sendFile(__dirname + './public/image/' + 요청.params.imagename)
 })
 
-app.put('/edit', function (요청, 응답) {
-  db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
-    console.log('수정완료');
-    응답.redirect('/list');
-  })
-})
-
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const session = require('express-session')
-
-app.use(session({ secret: '비밀코드', resave: true, saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.get('/login', function (요청, 응답) {
   응답.render('login.ejs')
@@ -233,3 +177,51 @@ app.delete('/delete', function (요청, 응답) {
     응답.status(200).send({ message: '성공' })
   });
 });
+
+
+// 검색기능 get요청으로 불러오기
+app.get('/search', (요청, 응답) => {
+  var 검색조건 = [
+    {
+      $search: {
+        index: 'titleSearch',
+        text: {
+          query: 요청.query.value,
+          path: {
+            'wildcard': '*'
+          }
+        }
+      }
+    }
+  ]
+  // console.log(요청.query.value);
+  db.collection('post').aggregate(검색조건).toArray((에러, 결과) => {
+    console.log(결과);
+    응답.render('result.ejs', { posts: 결과 })
+  })
+})
+
+
+
+app.get('/detail/:id', function (요청, 응답) {
+  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
+    응답.render('detail.ejs', { data: 결과 })
+    if (에러) {
+      응답.status(500).send({ message: '실패' });
+    }
+  });
+});
+
+app.get('/edit/:id', function (요청, 응답) {
+  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
+    응답.render('edit.ejs', { data: 결과 })
+    응답.render('detail.ejs', { data: 결과 })
+  })
+})
+
+app.put('/edit', function (요청, 응답) {
+  db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
+    응답.redirect('/list');
+  })
+})
+
