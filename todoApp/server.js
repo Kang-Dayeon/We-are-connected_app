@@ -197,6 +197,7 @@ passport.deserializeUser(function (아이디, done) {
 app.post('/register', function (요청, 응답) {
   db.collection('login').insertOne({ id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
     응답.redirect('/')
+    console.log(요청.body.id);
   })
 })
 
@@ -209,7 +210,8 @@ app.post('/write', function (요청, 응답) {
     var totalPost = 결과.totalPost;
     var userInfo = { _id: totalPost + 1, title: 요청.body.title, text: 요청.body.formText, user: 요청.user._id };
     db.collection('post').insertOne(userInfo, function (에러, 결과) {
-      // console.log('저장완료');
+      console.log(요청.user._id);
+      console.log('저장완료');
       // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
       db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (에러, 결과) {
         if (에러) { return console.log(에러) };
@@ -222,12 +224,12 @@ app.post('/write', function (요청, 응답) {
 
 app.delete('/delete', function (요청, 응답) {
   // ajax로 보내준 데이터임
-  console.log(요청.body);
   요청.body._id = parseInt(요청.body._id)
   var 삭제데이터 = { _id: 요청.body._id, user: 요청.user._id }
-  db.collection('post').deleteOne(요청.body, function (에러, 결과) {
-    if (결과) { console.log(에러); }
+  // , user: 요청.user._id
+  console.log(요청.body);
+  db.collection('post').remove(삭제데이터, function (에러, 결과) {
     console.log('삭제완료');
+    응답.status(200).send({ message: '성공' })
   });
-  // 응답.send('삭제완료');
 });
