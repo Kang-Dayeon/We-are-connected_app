@@ -11,6 +11,8 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 app.use(methodOverride('_method'))
 
+const { ObjectId } = require('mongodb');
+
 // 환경변수 설정
 require('dotenv').config()
 
@@ -36,54 +38,7 @@ MongoClient.connect(process.env.DB_URL, function (에러, client) {
 })
 
 
-app.get('/', function (요청, 응답) {
-  응답.render('index.ejs');
-});
-app.get('/write', function (요청, 응답) {
-  응답.render('write.ejs');
-});
-// db에서 데이터 받아서 list.ejs에 렌더링
-app.get('/list', function (요청, 응답) {
-  db.collection('post').find().toArray(function (에러, 결과) {
-    응답.render('list.ejs', { posts: 결과 }); //랜더링해주는 문법
-  });
-});
-
-// 이미지 업로드 기능 -> npm install multer
-let multer = require('multer');
-
-var path = require('path');
-
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/image')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-});
-var upload = multer({
-  storage: storage,
-  // fileFilter: function (req, file, callback) {
-  //   var ext = path.extname(file.originalname);
-  //   if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-  //     return callback(new Error('PNG, JPG만 업로드하세요'))
-  //   }
-  //   callback(null, true)
-  // },
-});
-
-app.get('/upload', function (요청, 응답) {
-  응답.render('upload.ejs');
-});
-app.post('/upload', upload.single('frofile'), function (요청, 응답) {
-  응답.send('저장완료');
-});
-app.get('/image/:imagename', function (요청, 응답) {
-  응답.sendFile(__dirname + './public/image/' + 요청.params.imagename)
-})
-
-
+// 로그인기능
 app.get('/login', function (요청, 응답) {
   응답.render('login.ejs')
 });
@@ -146,7 +101,101 @@ app.post('/register', function (요청, 응답) {
 })
 
 
-//DB저장 방법
+app.get('/', function (요청, 응답) {
+  응답.render('index.ejs');
+});
+app.get('/write', function (요청, 응답) {
+  응답.render('write.ejs');
+});
+// db에서 데이터 받아서 list.ejs에 렌더링
+app.get('/list', function (요청, 응답) {
+  db.collection('post').find().toArray(function (에러, 결과) {
+    응답.render('list.ejs', { posts: 결과 }); //랜더링해주는 문법
+  });
+});
+
+// 이미지 업로드 기능 -> npm install multer
+let multer = require('multer');
+
+var path = require('path');
+const { ObjectID } = require('bson');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/image')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({
+  storage: storage,
+  // fileFilter: function (req, file, callback) {
+  //   var ext = path.extname(file.originalname);
+  //   if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+  //     return callback(new Error('PNG, JPG만 업로드하세요'))
+  //   }
+  //   callback(null, true)
+  // },
+});
+
+app.get('/upload', function (요청, 응답) {
+  응답.render('upload.ejs');
+});
+app.post('/upload', upload.single('frofile'), function (요청, 응답) {
+  응답.send('저장완료');
+});
+app.get('/image/:imagename', function (요청, 응답) {
+  응답.sendFile(__dirname + './public/image/' + 요청.params.imagename)
+})
+
+// 상세페이지
+app.get('/detail/:id', 로그인했니, function (요청, 응답) {
+  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
+    db.collection('commentroom').find({ member : 요청.user._id }).toArray().then((결과) => {
+      응답.render('detail.ejs', {data : 결과});
+    });
+  });
+});
+
+// 댓글달기 기능
+app.post('/commentroom', 로그인했니, function (요청, 응답){
+  var infoData = {
+    title : 요청.body.title,
+    member : [ObjectId(요청.body.postId), 요청.user._id],
+    data : new Date()
+  }
+  db.collection('commentroom').insertOne(infoData).then((result) => {
+    console.log(result);
+  }).catch((err) => {
+    console.log(err);
+  })
+})
+// app.get('/detail/:id', 로그인했니, function(요청, 응답){
+//   db.collection('commentroom').find().toArray(function(에러, 결과){
+//     응답.render('detail.ejs', {data : 결과});
+//   });
+// });
+
+
+// 수정기능
+app.get('/edit/:id', function (요청, 응답) {
+  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
+    응답.render('edit.ejs', { data: 결과 })
+    응답.render('detail.ejs', { data: 결과 })
+  })
+})
+
+app.put('/edit', function (요청, 응답) {
+  db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
+    응답.redirect('/list');
+  })
+})
+
+
+
+
+//DB저장 방법 post요청
 app.post('/write', function (요청, 응답) {
 
   db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
@@ -203,25 +252,5 @@ app.get('/search', (요청, 응답) => {
 
 
 
-app.get('/detail/:id', function (요청, 응답) {
-  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    응답.render('detail.ejs', { data: 결과 })
-    if (에러) {
-      응답.status(500).send({ message: '실패' });
-    }
-  });
-});
 
-app.get('/edit/:id', function (요청, 응답) {
-  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    응답.render('edit.ejs', { data: 결과 })
-    응답.render('detail.ejs', { data: 결과 })
-  })
-})
-
-app.put('/edit', function (요청, 응답) {
-  db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
-    응답.redirect('/list');
-  })
-})
 
