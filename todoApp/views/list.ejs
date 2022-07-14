@@ -31,7 +31,7 @@
       <ul class="list-group">
         <% for (var i=0; i < posts.length; i++){ %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a class="detail-anchor" href="http://localhost:8080/detail/<%= posts[i]._id %>">
+            <a class="detail-anchor" href="http://localhost:8080/detail">
               <h6 class="fs-5 title">
                 <%= posts[i].title %>
               </h6>
@@ -80,9 +80,6 @@
           var title = e.target.dataset.title;
           $.post('/commentroom', { title : title, postId : id }).then(() => {
             console.log('성공');
-          });
-          $.get('/detail/:id').then( () => {
-            console.log('get성공')
           });
         })
 
