@@ -149,12 +149,7 @@ app.get('/image/:imagename', function (요청, 응답) {
   응답.sendFile(__dirname + './public/image/' + 요청.params.imagename)
 })
 
-// 상세페이지
-app.get('/detail', 로그인했니, function (요청, 응답) {
-  db.collection('commentroom').find({ member : 요청.user._id }).toArray().then((결과) => {
-    응답.render('detail.ejs', {commentdata : 결과});
-  });
-});
+
 
 // 댓글달기 기능
 app.post('/commentroom', 로그인했니, function (요청, 응답){
@@ -169,11 +164,11 @@ app.post('/commentroom', 로그인했니, function (요청, 응답){
     console.log(err);
   })
 })
-// app.get('/detail/:id', 로그인했니, function(요청, 응답){
-//   db.collection('commentroom').find().toArray(function(에러, 결과){
-//     응답.render('detail.ejs', {data : 결과});
-//   });
-// });
+app.get('/comment', 로그인했니, function (요청, 응답) {
+  db.collection('commentroom').find({ member : 요청.user._id }).toArray().then((결과) => {
+    응답.render('comment.ejs', {data : 결과});
+  });
+});
 
 
 // 수정기능
@@ -187,6 +182,12 @@ app.get('/edit/:id', function (요청, 응답) {
 app.put('/edit', function (요청, 응답) {
   db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
     응답.redirect('/list');
+  })
+})
+
+app.get('/detail/:id', function (요청, 응답) {
+  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
+    응답.render('detail.ejs', { data: 결과 })
   })
 })
 
