@@ -49,6 +49,10 @@ app.post('/login', passport.authenticate('local', {
   응답.redirect('/')
 });
 
+app.get('/signup', function (요청, 응답) {
+  응답.render('signup.ejs')
+});
+
 app.get('/mypage', 로그인했니, function (요청, 응답) {
   console.log(요청.user);
   응답.render('mypage.ejs', { 사용자: 요청.user })
@@ -94,7 +98,7 @@ passport.deserializeUser(function (아이디, done) {
 
 // 회원가입 기능
 app.post('/register', function (요청, 응답) {
-  db.collection('login').insertOne({ id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
+  db.collection('login').insertOne({ name: 요청.body.name, id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
     응답.redirect('/')
     console.log(요청.body.id);
   })
