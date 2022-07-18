@@ -99,7 +99,7 @@ passport.deserializeUser(function (아이디, done) {
 // 회원가입 기능
 app.post('/register', function (요청, 응답) {
   db.collection('login').insertOne({ name: 요청.body.name, id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
-    응답.redirect('/')
+    응답.redirect('/login')
     console.log(요청.body.id);
   })
 })
@@ -156,11 +156,11 @@ app.get('/image/:imagename', function (요청, 응답) {
 
 
 // 댓글달기 기능
-app.post('/commentroom', 로그인했니, function (요청, 응답){
+app.post('/commentroom', 로그인했니, function (요청, 응답) {
   var infoData = {
-    title : 요청.body.title,
-    member : [ObjectId(요청.body.postId), 요청.user._id],
-    data : new Date()
+    title: 요청.body.title,
+    member: [ObjectId(요청.body.postId), 요청.user._id],
+    data: new Date()
   }
   db.collection('commentroom').insertOne(infoData).then((result) => {
     console.log(result);
@@ -169,8 +169,8 @@ app.post('/commentroom', 로그인했니, function (요청, 응답){
   })
 })
 app.get('/comment', 로그인했니, function (요청, 응답) {
-  db.collection('commentroom').find({ member : 요청.user._id }).toArray().then((결과) => {
-    응답.render('comment.ejs', {data : 결과});
+  db.collection('commentroom').find({ member: 요청.user._id }).toArray().then((결과) => {
+    응답.render('comment.ejs', { data: 결과 });
   });
 });
 
