@@ -34,7 +34,7 @@
         <div class="mb-3">
           <input type="password" placeholder="Password" class="form-control bg-body rounded p-2 pw-input"
             id="signup-essential" name="pw" required></input>
-          <span class="error-message">문자와 숫자, 특수문자를 조합하여 6~24자로 구성하세요.</span>
+          <span class="error-message">문자와 숫자, 특수문자를 모두 포함하여 8~20자로 구성하세요.</span>
         </div>
         <button type="submit" class="btn btn-success" id="signup">Sign up</button>
       </form>
@@ -44,9 +44,11 @@
     <script>
 
       $(document).ready(function () {
+
+        console.log({ data });
         // 회원가입시 에러메세지 띄우기
         const CHECK_ID = /^[a-zA-Z0-9]{4,15}$/;
-        const CHECK_PW = /^[a-zA-Z0-9!@#$%^&*()?_~]{6,20}$/;
+        const CHECK_PW = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/;
 
         // id check
         $('.id-input').on("propertychange change keyup paste input", function () {

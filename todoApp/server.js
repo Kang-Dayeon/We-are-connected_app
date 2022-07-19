@@ -37,6 +37,14 @@ MongoClient.connect(process.env.DB_URL, function (에러, client) {
   });
 })
 
+// 미들웨어 만들기
+function 로그인했니(요청, 응답, next) {
+  if (요청.user) {
+    next()
+  } else {
+    응답.send('로그인 안했음')
+  }
+}
 
 // 로그인기능
 app.get('/login', function (요청, 응답) {
@@ -50,7 +58,9 @@ app.post('/login', passport.authenticate('local', {
 });
 
 app.get('/signup', function (요청, 응답) {
-  응답.render('signup.ejs')
+  db.collection('login').find().toArray(function (에러, 결과) {
+    응답.render('signup.ejs', { data: 결과 })
+  });
 });
 
 app.get('/mypage', 로그인했니, function (요청, 응답) {
@@ -58,14 +68,7 @@ app.get('/mypage', 로그인했니, function (요청, 응답) {
   응답.render('mypage.ejs', { 사용자: 요청.user })
 });
 
-// 미들웨어 만들기
-function 로그인했니(요청, 응답, next) {
-  if (요청.user) {
-    next()
-  } else {
-    응답.send('로그인 안했음')
-  }
-}
+
 
 passport.use(new LocalStrategy({
   usernameField: 'id',
