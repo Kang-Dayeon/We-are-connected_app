@@ -58,9 +58,7 @@ app.post('/login', passport.authenticate('local', {
 });
 
 app.get('/signup', function (요청, 응답) {
-  db.collection('login').find().toArray(function (에러, 결과) {
-    응답.render('signup.ejs', { data: 결과 })
-  });
+  응답.render('signup.ejs')
 });
 
 app.get('/mypage', 로그인했니, function (요청, 응답) {
@@ -101,9 +99,16 @@ passport.deserializeUser(function (아이디, done) {
 
 // 회원가입 기능
 app.post('/register', function (요청, 응답) {
-  db.collection('login').insertOne({ name: 요청.body.name, id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
-    응답.redirect('/login')
-    console.log(요청.body.id);
+  db.collection('login').findOne({ id: 요청.body.id }, function (에러, 결과) {
+    if (결과.id == 요청.body.id) {
+      응답.send('중복아이디 입니다.')
+    } else {
+      db.collection('login').insertOne({ name: 요청.body.name, id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
+        응답.redirect('/login')
+        // console.log(요청.body.id);
+      })
+      // console.log();
+    }
   })
 })
 
