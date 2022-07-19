@@ -19,26 +19,77 @@
 
     <!-- 가입창 -->
     <div class="container-md mt-5">
-      <form action="/register" method="POST">
+      <form action="/register" method="POST" id="signForm">
         <!-- post 요청 방법 -->
         <legend class="fs-2 fw-bold text-success mb-3">Sign up</legend>
         <div class="mb-3">
-          <input placeholder="What's you name?" type="text" class="form-control shadow-sm bg-body rounded"
-            id="exampleInputEmail1" aria-describedby="emailHelp" name="name" maxlength="10">
+          <input placeholder="What's you name?" type="text" class="form-control shadow-sm bg-body rounded name-input"
+            id="exampleInputEmail1" aria-describedby="emailHelp" name="name" maxlength="10" required>
         </div>
         <div class="mb-3">
-          <input placeholder="ID" type="text" class="form-control shadow-sm bg-body rounded id-input error"
-            id="exampleInputEmail1" aria-describedby="emailHelp" name="id">
-          <span class="error-message">소문자와 숫자를 조합하여 5~10자로 구성하세요.</span>
+          <input placeholder="ID" type="text" class="form-control shadow-sm bg-body rounded id-input"
+            id="signup-essential" aria-describedby="emailHelp" name="id" required>
+          <span class="error-message">문자와 숫자를 조합하여 4~15자로 구성하세요.</span>
         </div>
         <div class="mb-3">
-          <input type="password" placeholder="Password" class="form-control bg-body rounded p-2 pw-input error"
-            id="exampleFormControlTextarea1" name="pw"></input>
+          <input type="password" placeholder="Password" class="form-control bg-body rounded p-2 pw-input"
+            id="signup-essential" name="pw" required></input>
           <span class="error-message">문자와 숫자, 특수문자를 조합하여 6~24자로 구성하세요.</span>
         </div>
-        <button type="submit" class="btn btn-success">Sign up</button>
+        <button type="submit" class="btn btn-success" id="signup">Sign up</button>
       </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+      $(document).ready(function () {
+        // 회원가입시 에러메세지 띄우기
+        const CHECK_ID = /^[a-zA-Z0-9]{4,15}$/;
+        const CHECK_PW = /^[a-zA-Z0-9!@#$%^&*()?_~]{6,20}$/;
+
+        // id check
+        $('.id-input').on("propertychange change keyup paste input", function () {
+          let idVal = $('.id-input').val();
+          let idTest = CHECK_ID.test(idVal);
+          if (!idTest) {
+            $('.id-input').addClass('error');
+            $('#signup').attr("disabled", true);
+          } else {
+            $('.id-input').removeClass('error');
+            $('#signup').attr("disabled", false);
+          };
+
+        });
+
+        // pw check
+        $('.pw-input').on("propertychange change keyup paste input", function () {
+          let pwVal = $('.pw-input').val();
+          let pwTest = CHECK_PW.test(pwVal);
+          if (!pwTest) {
+            $('.pw-input').addClass('error');
+            $('#signup').attr("disabled", true);
+          } else {
+            $('.pw-input').removeClass('error');
+            $('#signup').attr("disabled", false);
+          };
+        });
+
+        var is_empty = false;
+        $('#signForm').find('input').each(function () {
+          if (!$(this).val()) {
+            is_empty = true
+          };
+        });
+        if (is_empty) {
+          $('#signup').attr("disabled", true);
+        } else {
+          $('#signup').attr("disabled", false);
+        }
+
+      });
+    </script>
+
 
 
     <!-- JavaScript Bundle with Popper -->
