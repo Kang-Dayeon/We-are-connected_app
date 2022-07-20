@@ -62,8 +62,17 @@ app.get('/signup', function (req, res) {
 });
 
 app.get('/mypage', loginCheck, function (req, res) {
-  console.log(req.user);
-  res.render('mypage.ejs', { 사용자: req.user })
+  // res.render('mypage.ejs', { 사용자: req.user })
+  var userData = { myid: [req.body.user, req.user._id] }
+  db.collection('post').find(userData).toArray().then((result) => {
+    console.log(result);
+    res.render('mypage.ejs', { posts: result }); //랜더링해주는 문법
+  });
+  // app.get('/comment', loginCheck, function (req, res) {
+  //   db.collection('commentroom').find({ member: req.user._id }).toArray().then((result) => {
+  //     res.render('comment.ejs', { data: result });
+  //   });
+  // });
 });
 
 
@@ -205,7 +214,6 @@ app.get('/detail/:id', function (req, res) {
 
 //DB저장 방법 postreq
 app.post('/write', function (req, res) {
-
   db.collection('counter').findOne({ name: '게시물갯수' }, function (err, result) {
     var totalPost = result.totalPost;
     var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id };
