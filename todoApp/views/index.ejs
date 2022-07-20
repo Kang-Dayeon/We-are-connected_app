@@ -19,6 +19,33 @@
 
   <%- include('nav.html') %>
 
+    <div class="card">
+      <img src="..." class="card-img-top main-img" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Today Space🪐</h5>
+        <h5 class="card-title title"></h5>
+        <p class="card-text explanation"></p>
+        <p class="card-text"><small class="text-muted card-date"></small></p>
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          type: "GET",
+          url: "https://api.nasa.gov/planetary/apod?api_key=jeGCYNYryCQIX7GEB3XhH3OZ5iW8QTktZ7wbPjfX",
+          success: function (data) {
+            console.log(data);
+            $('.main-img').attr('src', data.url)
+            $('.title').text(data.title)
+            $('.explanation').text(data.explanation)
+            $('.card-date').text(data.date)
+          }
+        })
+      });
+    </script>
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
