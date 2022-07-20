@@ -29,7 +29,7 @@ app.use(passport.session());
 
 var db; //데이터 베이스를 저장하기 위한 변수
 
-MongoClient.connect(process.env.DB_URL, function (에러, client) {
+MongoClient.connect(process.env.DB_URL, function (err, client) {
   //todoapp이라는 database에 연결함
   db = client.db('todoapp');
   app.listen(8080, function () {
@@ -38,32 +38,32 @@ MongoClient.connect(process.env.DB_URL, function (에러, client) {
 })
 
 // 미들웨어 만들기
-function 로그인했니(요청, 응답, next) {
-  if (요청.user) {
+function loginCheck(req, res, next) {
+  if (req.user) {
     next()
   } else {
-    응답.send('로그인 안했음')
+    res.send('로그인 안했음')
   }
 }
 
 // 로그인기능
-app.get('/login', function (요청, 응답) {
-  응답.render('login.ejs')
+app.get('/login', function (req, res) {
+  res.render('login.ejs')
 });
 
 app.post('/login', passport.authenticate('local', {
   failureRedirect: '/fail'
-}), function (요청, 응답) {
-  응답.redirect('/')
+}), function (req, res) {
+  res.redirect('/')
 });
 
-app.get('/signup', function (요청, 응답) {
-  응답.render('signup.ejs')
+app.get('/signup', function (req, res) {
+  res.render('signup.ejs')
 });
 
-app.get('/mypage', 로그인했니, function (요청, 응답) {
-  console.log(요청.user);
-  응답.render('mypage.ejs', { 사용자: 요청.user })
+app.get('/mypage', loginCheck, function (req, res) {
+  console.log(req.user);
+  res.render('mypage.ejs', { 사용자: req.user })
 });
 
 
@@ -73,56 +73,53 @@ passport.use(new LocalStrategy({
   passwordField: 'pw',
   session: true,
   passReqToCallback: false,
-}, function (입력한아이디, 입력한비번, done) {
-  //console.log(입력한아이디, 입력한비번);
-  db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
-    if (에러) return done(에러)
+}, function (userId, userPw, done) {
+  db.collection('login').findOne({ id: userId }, function (err, result) {
+    if (err) return done(err)
 
-    if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
-    if (입력한비번 == 결과.pw) {
-      return done(null, 결과)
+    if (!result) return done(null, false, { message: '존재하지않는 아이디입니다.' })
+    if (userPw == result.pw) {
+      return done(null, result)
     } else {
-      return done(null, false, { message: '비번틀렸어요' })
+      return done(null, false, { message: '비밀번호가 같지 않습니다.' })
     }
   })
 }));
-// done(서버에러, 성공시사용자DB데이터, 콜백함수) : 세개의 파라미터를 가짐
+// done(서버err, 성공시사용자DB데이터, 콜백함수) : 세개의 파라미터를 가짐
 passport.serializeUser(function (user, done) {
   done(null, user.id)
 });
-passport.deserializeUser(function (아이디, done) {
-  db.collection('login').findOne({ id: 아이디 }, function (에러, 결과) {
-    done(null, 결과)
+passport.deserializeUser(function (userId, done) {
+  db.collection('login').findOne({ id: userId }, function (err, result) {
+    done(null, result)
   })
 });
 // deserializeUser() : 로그인한 유저의 세션아이디를 바탕으로 개인정보를 DB에서 찾는 역할
 
 // 회원가입 기능
-app.post('/register', function (요청, 응답) {
-  db.collection('login').findOne({ id: 요청.body.id }, function (에러, 결과) {
-    if (결과.id == 요청.body.id) {
-      응답.send('중복아이디 입니다.')
-    } else {
-      db.collection('login').insertOne({ name: 요청.body.name, id: 요청.body.id, pw: 요청.body.pw }, function (에러, 결과) {
-        응답.redirect('/login')
-        // console.log(요청.body.id);
+app.post('/register', function (req, res) {
+  db.collection('login').findOne({ id: req.body.id }, function (err, result) {
+    if (result == null) {
+      db.collection('login').insertOne({ name: req.body.name, id: req.body.id, pw: req.body.pw }, function (err, result) {
+        res.redirect('/login')
       })
-      // console.log();
+    } else {
+      res.send('중복아이디 입니다.')
     }
   })
 })
 
 
-app.get('/', function (요청, 응답) {
-  응답.render('index.ejs');
+app.get('/', function (req, res) {
+  res.render('index.ejs');
 });
-app.get('/write', function (요청, 응답) {
-  응답.render('write.ejs');
+app.get('/write', function (req, res) {
+  res.render('write.ejs');
 });
 // db에서 데이터 받아서 list.ejs에 렌더링
-app.get('/list', function (요청, 응답) {
-  db.collection('post').find().toArray(function (에러, 결과) {
-    응답.render('list.ejs', { posts: 결과 }); //랜더링해주는 문법
+app.get('/list', function (req, res) {
+  db.collection('post').find().toArray(function (err, result) {
+    res.render('list.ejs', { posts: result }); //랜더링해주는 문법
   });
 });
 
@@ -151,23 +148,23 @@ var upload = multer({
   // },
 });
 
-app.get('/upload', function (요청, 응답) {
-  응답.render('upload.ejs');
+app.get('/upload', function (req, res) {
+  res.render('upload.ejs');
 });
-app.post('/upload', upload.single('frofile'), function (요청, 응답) {
-  응답.send('저장완료');
+app.post('/upload', upload.single('frofile'), function (req, res) {
+  res.send('저장완료');
 });
-app.get('/image/:imagename', function (요청, 응답) {
-  응답.sendFile(__dirname + './public/image/' + 요청.params.imagename)
+app.get('/image/:imagename', function (req, res) {
+  res.sendFile(__dirname + './public/image/' + req.params.imagename)
 })
 
 
 
 // 댓글달기 기능
-app.post('/commentroom', 로그인했니, function (요청, 응답) {
+app.post('/commentroom', loginCheck, function (req, res) {
   var infoData = {
-    title: 요청.body.title,
-    member: [ObjectId(요청.body.postId), 요청.user._id],
+    title: req.body.title,
+    member: [ObjectId(req.body.postId), req.user._id],
     data: new Date()
   }
   db.collection('commentroom').insertOne(infoData).then((result) => {
@@ -176,77 +173,73 @@ app.post('/commentroom', 로그인했니, function (요청, 응답) {
     console.log(err);
   })
 })
-app.get('/comment', 로그인했니, function (요청, 응답) {
-  db.collection('commentroom').find({ member: 요청.user._id }).toArray().then((결과) => {
-    응답.render('comment.ejs', { data: 결과 });
+app.get('/comment', loginCheck, function (req, res) {
+  db.collection('commentroom').find({ member: req.user._id }).toArray().then((result) => {
+    res.render('comment.ejs', { data: result });
   });
 });
 
 
 // 수정기능
-app.get('/edit/:id', function (요청, 응답) {
-  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    응답.render('edit.ejs', { data: 결과 })
-    응답.render('detail.ejs', { data: 결과 })
+app.get('/edit/:id', function (req, res) {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
+    res.render('edit.ejs', { data: result })
+    res.render('detail.ejs', { data: result })
   })
 })
 
-app.put('/edit', function (요청, 응답) {
-  db.collection('post').updateOne({ _id: parseInt(요청.body.id) }, { $set: { title: 요청.body.title, text: 요청.body.text } }, function (에러, 결과) {
-    응답.redirect('/list');
+app.put('/edit', function (req, res) {
+  db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set: { title: req.body.title, text: req.body.text } }, function (err, result) {
+    res.redirect('/list');
   })
 })
 
-app.get('/detail/:id', function (요청, 응답) {
-  db.collection('post').findOne({ _id: parseInt(요청.params.id) }, function (에러, 결과) {
-    응답.render('detail.ejs', { data: 결과 })
+app.get('/detail/:id', function (req, res) {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
+    res.render('detail.ejs', { data: result })
   })
 })
 
 
 
 
-//DB저장 방법 post요청
-app.post('/write', function (요청, 응답) {
+//DB저장 방법 postreq
+app.post('/write', function (req, res) {
 
-  db.collection('counter').findOne({ name: '게시물갯수' }, function (에러, 결과) {
-    // console.log(결과.totalPost);
-    var totalPost = 결과.totalPost;
-    var userInfo = { _id: totalPost + 1, title: 요청.body.title, text: 요청.body.formText, user: 요청.user._id };
-    db.collection('post').insertOne(userInfo, function (에러, 결과) {
-      console.log(요청.user._id);
+  db.collection('counter').findOne({ name: '게시물갯수' }, function (err, result) {
+    var totalPost = result.totalPost;
+    var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id };
+    db.collection('post').insertOne(userInfo, function (err, result) {
       console.log('저장완료');
       // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
-      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (에러, 결과) {
-        if (에러) { return console.log(에러) };
+      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (err, result) {
+        if (err) { return console.log(err) };
       });
     });
   });
-  응답.redirect('/list');
+  res.redirect('/list');
 });
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
-app.delete('/delete', function (요청, 응답) {
+app.delete('/delete', function (req, res) {
   // ajax로 보내준 데이터임
-  요청.body._id = parseInt(요청.body._id)
-  var 삭제데이터 = { _id: 요청.body._id, user: 요청.user._id }
-  // , user: 요청.user._id
-  console.log(요청.body);
-  db.collection('post').remove(삭제데이터, function (에러, 결과) {
+  req.body._id = parseInt(req.body._id)
+  var delData = { _id: req.body._id, user: req.user._id }
+  db.collection('post').remove(delData, function (err, result) {
     console.log('삭제완료');
-    응답.status(200).send({ message: '성공' })
+    res.status(200).send({ message: '성공' })
   });
 });
 
 
-// 검색기능 get요청으로 불러오기
-app.get('/search', (요청, 응답) => {
+// 검색기능 getreq으로 불러오기
+app.get('/search', (req, res) => {
   var 검색조건 = [
     {
       $search: {
         index: 'titleSearch',
         text: {
-          query: 요청.query.value,
+          query: req.query.value,
           path: {
             'wildcard': '*'
           }
@@ -254,10 +247,10 @@ app.get('/search', (요청, 응답) => {
       }
     }
   ]
-  // console.log(요청.query.value);
-  db.collection('post').aggregate(검색조건).toArray((에러, 결과) => {
-    console.log(결과);
-    응답.render('result.ejs', { posts: 결과 })
+  // console.log(req.query.value);
+  db.collection('post').aggregate(검색조건).toArray((err, result) => {
+    console.log(result);
+    res.render('result.ejs', { posts: result })
   })
 })
 
