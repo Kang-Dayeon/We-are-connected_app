@@ -54,7 +54,7 @@ app.get('/login', function (req, res) {
 app.post('/login', passport.authenticate('local', {
   failureRedirect: '/fail'
 }), function (req, res) {
-  res.redirect('/')
+  res.redirect('/mypage')
 });
 
 app.get('/signup', function (req, res) {
@@ -62,17 +62,11 @@ app.get('/signup', function (req, res) {
 });
 
 app.get('/mypage', loginCheck, function (req, res) {
-  // res.render('mypage.ejs', { 사용자: req.user })
-  var userData = { myid: [req.body.user, req.user._id] }
-  db.collection('post').find(userData).toArray().then((result) => {
+  var myid = req.user
+  db.collection('post').findOne(myid, function (err, result) {
     console.log(result);
-    res.render('mypage.ejs', { posts: result }); //랜더링해주는 문법
+    res.render('mypage.ejs'); //랜더링해주는 문법
   });
-  // app.get('/comment', loginCheck, function (req, res) {
-  //   db.collection('commentroom').find({ member: req.user._id }).toArray().then((result) => {
-  //     res.render('comment.ejs', { data: result });
-  //   });
-  // });
 });
 
 
