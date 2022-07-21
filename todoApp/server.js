@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+
 // 로그인관련
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -46,31 +47,8 @@ function loginCheck(req, res, next) {
   }
 }
 
-// 로그인기능
-app.get('/login', function (req, res) {
-  res.render('login.ejs')
-});
 
-app.post('/login', passport.authenticate('local', {
-  failureRedirect: '/fail'
-}), function (req, res) {
-  res.redirect('/mypage')
-});
-
-app.get('/signup', function (req, res) {
-  res.render('signup.ejs')
-});
-
-app.get('/mypage', loginCheck, function (req, res) {
-  var myid = req.user
-  db.collection('post').findOne(myid, function (err, result) {
-    console.log(result);
-    res.render('mypage.ejs'); //랜더링해주는 문법
-  });
-});
-
-
-
+// passport 라이브러리 사용하여 로그인 체크
 passport.use(new LocalStrategy({
   usernameField: 'id',
   passwordField: 'pw',
@@ -112,6 +90,32 @@ app.post('/register', function (req, res) {
   })
 })
 
+// 로그인기능
+app.get('/login', function (req, res) {
+  res.render('login.ejs')
+});
+
+app.post('/login', passport.authenticate('local', {
+  failureRedirect: '/fail'
+}), function (req, res) {
+  res.redirect('/mypage')
+});
+
+app.get('/signup', function (req, res) {
+  res.render('signup.ejs')
+});
+
+// mypage 내가 작성한 글만 보이게
+app.get('/mypage', loginCheck, function (req, res) {
+  console.log(req.user);
+  db.collection('post').find({user : req.user._id}).toArray(function (err, result) {
+    res.render('mypage.ejs', { posts: result }); //랜더링해주는 문법
+  });
+});
+
+
+
+
 
 app.get('/', function (req, res) {
   res.render('index.ejs');
@@ -125,41 +129,6 @@ app.get('/list', function (req, res) {
     res.render('list.ejs', { posts: result }); //랜더링해주는 문법
   });
 });
-
-// 이미지 업로드 기능 -> npm install multer
-let multer = require('multer');
-
-var path = require('path');
-const { ObjectID } = require('bson');
-
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/image')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-});
-var upload = multer({
-  storage: storage,
-  // fileFilter: function (req, file, callback) {
-  //   var ext = path.extname(file.originalname);
-  //   if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-  //     return callback(new Error('PNG, JPG만 업로드하세요'))
-  //   }
-  //   callback(null, true)
-  // },
-});
-
-app.get('/upload', function (req, res) {
-  res.render('upload.ejs');
-});
-app.post('/upload', upload.single('frofile'), function (req, res) {
-  res.send('저장완료');
-});
-app.get('/image/:imagename', function (req, res) {
-  res.sendFile(__dirname + './public/image/' + req.params.imagename)
-})
 
 
 
@@ -203,6 +172,11 @@ app.get('/detail/:id', function (req, res) {
   })
 })
 
+app.get('/mydetail/:id', function (req, res) {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
+    res.render('mypage-detail.ejs', { data: result })
+  })
+})
 
 
 
@@ -234,7 +208,7 @@ app.delete('/delete', function (req, res) {
 });
 
 
-// 검색기능 getreq으로 불러오기
+// 검색기능
 app.get('/search', (req, res) => {
   var 검색조건 = [
     {
@@ -255,6 +229,43 @@ app.get('/search', (req, res) => {
     res.render('result.ejs', { posts: result })
   })
 })
+
+
+// 이미지 업로드 기능 -> npm install multer
+let multer = require('multer');
+
+var path = require('path');
+const { ObjectID } = require('bson');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/image')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({
+  storage: storage,
+  // fileFilter: function (req, file, callback) {
+  //   var ext = path.extname(file.originalname);
+  //   if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+  //     return callback(new Error('PNG, JPG만 업로드하세요'))
+  //   }
+  //   callback(null, true)
+  // },
+});
+
+app.get('/upload', function (req, res) {
+  res.render('upload.ejs');
+});
+app.post('/upload', upload.single('frofile'), function (req, res) {
+  res.send('저장완료');
+});
+app.get('/image/:imagename', function (req, res) {
+  res.sendFile(__dirname + './public/image/' + req.params.imagename)
+})
+
 
 
 
