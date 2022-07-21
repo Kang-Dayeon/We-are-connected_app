@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="./public/main.css">
+  <link rel="stylesheet" href="./../public/main.css">
 
 
 </head>
@@ -35,14 +35,11 @@
               <h6 class="fs-6 title fw-bold">
                 <%= posts[i].title %>
               </h6>
-              <p class="fs-7">
-                <%= posts[i].user %>
-              </p>
             </a>
             <div>
               <button class="btn btn-sm comment btn-outline-dark" data-id="<%= posts[i].user %>"
                 data-title="<%= posts[i].title %>">Comment</button>
-              <button class="btn btn-outline-secondary btn-sm delete" data-id="<%= posts[i]._id %>">Del</button>
+              <!-- <button class="btn btn-outline-secondary btn-sm delete" data-id="<%= posts[i]._id %>">Del</button> -->
             </div>
           </li>
           <% } %>
@@ -57,19 +54,19 @@
 
     <script>
       $(document).ready(function () {
-        $('.delete').click(function (e) {
-          var postNum = e.target.dataset.id;
-          var 지금누른것 = $(this);
-          $.ajax({
-            method: 'DELETE',
-            url: '/delete',
-            data: { _id: postNum }
-          }).done(function (결과) {
-            지금누른것.parent('li').remove();
-          }).fail(function () {
-            alert("삭제 실패")
-          });
-        });
+        // $('.delete').click(function (e) {
+        //   var postNum = e.target.dataset.id;
+        //   var 지금누른것 = $(this);
+        //   $.ajax({
+        //     method: 'DELETE',
+        //     url: '/delete',
+        //     data: { _id: postNum }
+        //   }).done(function (결과) {
+        //     지금누른것.parent('li').remove();
+        //   }).fail(function () {
+        //     alert("삭제 실패")
+        //   });
+        // });
 
         $('#search').click(function () {
           var inputVal = $("#searchInput").val();
