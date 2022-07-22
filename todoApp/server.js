@@ -156,12 +156,12 @@ app.get('/comment', loginCheck, function (req, res) {
 app.get('/edit/:id', function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
     res.render('edit.ejs', { data: result })
-    res.render('detail.ejs', { data: result })
+    // res.render('mypage-detail.ejs', { data: result })
   })
 })
 
 app.put('/edit', function (req, res) {
-  db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set: { title: req.body.title, text: req.body.text } }, function (err, result) {
+  db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set: { title: req.body.title, text: req.body.formText } }, function (err, result) {
     res.redirect('/list');
   })
 })

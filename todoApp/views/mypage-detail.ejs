@@ -29,8 +29,7 @@
                 <hr>
                 <p class="card-text"><%= data.text %></p>
                 <div class=" gap-2 d-flex justify-content-end">
-                    <a href="/edit/<%= data._id %>" class="btn btn-primary btn-sm me-md-1">Edit</a>
-                    <button class="btn btn-secondary btn-sm delete" data-id="<%= data._id %>">Del</button>
+                  <a href="/edit/<%= data._id %>" class="btn btn-primary btn-sm me-md-1">Edit</a>
                 </div>
             </div>
           </div>
@@ -47,19 +46,21 @@
         alert('없는 페이지 입니다')
       });
 
-      $('.delete').click(function (e) {
-          var postNum = e.target.dataset.id;
-          var 지금누른것 = $(this);
-          $.ajax({
-            method: 'DELETE',
-            url: '/delete',
-            data: { _id: postNum }
-          }).done(function (결과) {
-            지금누른것.parent('li').remove();
-          }).fail(function () {
-            alert("삭제 실패")
-          });
-        });
+      // $('.delete').click(function (e) {
+      //     var postNum = e.target.dataset.id;
+      //     var 지금누른것 = $(this);
+      //     console.log(postNum);
+      //     $.ajax({
+      //       method: 'DELETE',
+      //       url: '/delete',
+      //       data: { _id: postNum }
+      //     }).done(function (결과) {
+      //       // 지금누른것.parent('li').remove();
+      //       location.replace('/mypage')
+      //     }).fail(function () {
+      //       alert("삭제 실패")
+      //     });
+      //   });
     </script>
 
     <!-- JavaScript Bundle with Popper -->
