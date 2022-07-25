@@ -133,34 +133,34 @@ app.get('/list', function (req, res) {
 
 
 // 댓글달기 기능
-app.post('/commentroom', loginCheck, function (req, res) {
-  var infoData = {
-    title: req.body.title,
-    member: [ObjectId(req.body.postId), req.user._id],
-    data: new Date()
-  }
-  db.collection('commentroom').insertOne(infoData).then((result) => {
-    console.log(result);
-  }).catch((err) => {
-    console.log(err);
-  })
-})
-app.get('/comment', loginCheck, function (req, res) {
-  db.collection('commentroom').find({ member: req.user._id }).toArray().then((result) => {
-    res.render('comment.ejs', { data: result });
-  });
-});
+// app.post('/commentroom', loginCheck, function (req, res) {
+//   var infoData = {
+//     title: req.body.title,
+//     member: [ObjectId(req.body.postId), req.user._id],
+//     data: new Date()
+//   }
+//   db.collection('commentroom').insertOne(infoData).then((result) => {
+//     console.log(result);
+//   }).catch((err) => {
+//     console.log(err);
+//   })
+// })
+// app.get('/comment', loginCheck, function (req, res) {
+//   db.collection('commentroom').find({ member: req.user._id }).toArray().then((result) => {
+//     res.render('comment.ejs', { data: result });
+//   });
+// });
 
 
 // 수정기능
-app.get('/edit/:id', function (req, res) {
+app.get('/edit/:id', loginCheck, function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
     res.render('edit.ejs', { data: result })
     // res.render('mypage-detail.ejs', { data: result })
   })
 })
 
-app.put('/edit', function (req, res) {
+app.put('/edit', loginCheck, function (req, res) {
   db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set: { title: req.body.title, text: req.body.formText } }, function (err, result) {
     res.redirect('/list');
   })
@@ -169,10 +169,13 @@ app.put('/edit', function (req, res) {
 app.get('/detail/:id', function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
     res.render('detail.ejs', { data: result })
+    // db.collection('commentroom').find().toArray(function(err, result){
+    //   res.render('detail.ejs', { comment: result })
+    // })
   })
 })
 
-app.get('/mydetail/:id', function (req, res) {
+app.get('/mydetail/:id', loginCheck, function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
     res.render('mypage-detail.ejs', { data: result })
   })
@@ -181,7 +184,7 @@ app.get('/mydetail/:id', function (req, res) {
 
 
 //DB저장 방법 postreq
-app.post('/write', function (req, res) {
+app.post('/write', loginCheck, function (req, res) {
   db.collection('counter').findOne({ name: '게시물갯수' }, function (err, result) {
     var totalPost = result.totalPost;
     var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id };
@@ -194,6 +197,14 @@ app.post('/write', function (req, res) {
     });
   });
   res.redirect('/list');
+});
+
+app.post('/comment',loginCheck, function (req, res) {
+  var commentInfo = {postNum: req.body.postNum ,comment: req.body.comment, user: req.user._id, date: new Date()}
+  db.collection('commentroom').insertOne(commentInfo, function (err, result) {
+    console.log(commentInfo);
+    res.render('/detail.ejs', {commentData : result})
+  });
 });
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
