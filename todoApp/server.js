@@ -173,7 +173,7 @@ app.get('/detail/:id', function (req, res) {
 })
 app.get('/detail/:id', function (req, res){
   db.collection('commentroom').findOne({postNum: parseInt(req.params.id) }, function(err, result){
-    res.render('detail.ejs', { comment: result })
+    res.render('detail.ejs', { commentData: result })
     console.log(result);
   })
 })
