@@ -23,29 +23,20 @@
 
       <div class="card">
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <h5 class="card-title"><%= data.title %></h5>
-              <p class="card-subtitle mb-2 text-muted date"></p>
-            </div>
-          <hr>
-          <p class="card-text"><%= data.text %></p>
-        </div>
-      </div>
-      <div class="card mt-3">
-        <div class="card-body">
-          <h5 class="card-title">Comment</h5>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item list-group-item-info"><%= comment %>></li>
-          </ul>
-          <form action="/comment" method="POST">
-          <div class="input-group mb-3 mt-2">
-            <input value="<%= data._id %>" name="postNum" style="display:none;">
-            <input name="comment" type="text" class="form-control" placeholder="Write your commnet" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Push</button>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title">
+              <%= data.title %>
+            </h5>
+            <p class="card-subtitle mb-2 text-muted date"></p>
           </div>
-        </form>
+          <hr>
+          <p class="card-text">
+            <%= data.text %>
+          </p>
         </div>
       </div>
+      <%- include('comment.ejs') %>
+
     </div>
 
     <script>

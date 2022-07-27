@@ -107,8 +107,8 @@ app.get('/signup', function (req, res) {
 
 // mypage 내가 작성한 글만 보이게
 app.get('/mypage', loginCheck, function (req, res) {
-  console.log(req.user);
-  db.collection('post').find({user : req.user._id}).toArray(function (err, result) {
+  // console.log(req.user);
+  db.collection('post').find({ user: req.user._id }).toArray(function (err, result) {
     res.render('mypage.ejs', { posts: result }); //랜더링해주는 문법
   });
 });
@@ -168,15 +168,18 @@ app.put('/edit', loginCheck, function (req, res) {
 
 app.get('/detail/:id', function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
-    res.render('detail.ejs', { data: result })
+    db.collection('commentroom').find({ postNum: req.params.id }).toArray().then((result) => {
+      res.render('comment.ejs', { data: result })
+    })
+    res.redirect('/detail/:id', { data: result })
   })
 })
-app.get('/detail/:id', function (req, res){
-  db.collection('commentroom').findOne({postNum: parseInt(req.params.id) }, function(err, result){
-    res.render('detail.ejs', { commentData: result })
-    console.log(result);
-  })
-})
+// app.get('/detail/:id', function (req, res) {
+//   db.collection('commentroom').find({ postNum: parseInt(req.params.id) }).toArray().then((result) => {
+//     console.log(result);
+//     res.render('comment.ejs', { data: result })
+//   })
+// })
 
 app.get('/mydetail/:id', loginCheck, function (req, res) {
   db.collection('post').findOne({ postNum: parseInt(req.params.id) }, function (err, result) {
@@ -202,11 +205,12 @@ app.post('/write', loginCheck, function (req, res) {
   res.redirect('/list');
 });
 
-app.post('/comment',loginCheck, function (req, res) {
-  var commentInfo = {postNum: req.body.postNum ,comment: req.body.comment, user: req.user._id, date: new Date()}
+app.post('/comment', loginCheck, function (req, res) {
+  var commentInfo = { postNum: req.body.postNum, comment: req.body.comment, user: req.user.name, date: new Date() }
   db.collection('commentroom').insertOne(commentInfo, function (err, result) {
     console.log(commentInfo);
   });
+  // res.redirect('/list');
 });
 //auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
