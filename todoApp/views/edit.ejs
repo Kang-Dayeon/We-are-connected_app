@@ -15,7 +15,7 @@
 </head>
 
 <body>
-  <%- include('nav.html') %>
+  <%- include('nav.ejs') %>
 
     <div class="container-md mt-2">
       <form action="/edit?_method=PUT" method="POST">
@@ -27,8 +27,8 @@
             aria-describedby="emailHelp" name="title" value="<%= data.title %>">
         </div>
         <div class="mb-3">
-          <input type="text" class="form-control bg-body rounded p-2"
-            id="exampleFormControlTextarea1" name="formText" value="<%= data.text %>">
+          <input type="text" class="form-control bg-body rounded p-2" id="exampleFormControlTextarea1" name="formText"
+            value="<%= data.text %>">
         </div>
         <button type="submit" class="btn btn-outline-dark">SAVE</button>
       </form>

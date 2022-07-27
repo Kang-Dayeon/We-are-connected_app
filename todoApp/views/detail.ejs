@@ -17,7 +17,7 @@
 
 <body>
 
-  <%- include('nav.html') %>
+  <%- include('nav.ejs') %>
 
     <div class="container-md mt-2">
 
@@ -35,7 +35,34 @@
           </p>
         </div>
       </div>
-      <%- include('comment.ejs') %>
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title">Comment</h5>
+          <ul class="list-group list-group-flush">
+            <% for (var i=0; i < data2.length ; i++){ %>
+              <li class="list-group-item list-group-item-info">
+                <p>
+                  <%= data2[i].comment %>
+                </p>
+                <p>
+                  <%= data2[i].user %>
+                </p>
+                <p>
+                  <%= data2[i].date %>
+                </p>
+              </li>
+              <% } %>
+          </ul>
+          <form action="/comment" method="POST">
+            <div class="input-group mb-3 mt-2">
+              <input value="<%= data._id %>" name="postNum" style="display:none;">
+              <input name="comment" type="text" class="form-control" placeholder="Write your commnet"
+                aria-label="Recipient's username" aria-describedby="button-addon2">
+              <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Push</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
     </div>
 

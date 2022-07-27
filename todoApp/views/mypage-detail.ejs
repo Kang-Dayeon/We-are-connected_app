@@ -17,22 +17,26 @@
 
 <body>
 
-  <%- include('nav.html') %>
+  <%- include('nav.ejs') %>
 
     <div class="container-md mt-2">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <h5 class="card-title"><%= data.title %></h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                </div>
-                <hr>
-                <p class="card-text"><%= data.text %></p>
-                <div class=" gap-2 d-flex justify-content-end">
-                  <a href="/edit/<%= data._id %>" class="btn btn-primary btn-sm me-md-1">Edit</a>
-                </div>
-            </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title">
+              <%= data.title %>
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
           </div>
+          <hr>
+          <p class="card-text">
+            <%= data.text %>
+          </p>
+          <div class=" gap-2 d-flex justify-content-end">
+            <a href="/edit/<%= data._id %>" class="btn btn-primary btn-sm me-md-1">Edit</a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
