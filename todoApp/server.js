@@ -169,7 +169,7 @@ app.put('/edit', loginCheck, function (req, res) {
 app.get('/detail/:id', function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
     db.collection('commentroom').find({ postNum: req.params.id }).toArray().then((result2) => {
-      res.render('/detail/:id', { data: result, data2: result2 })
+      res.render('detail.ejs', { data: result, data2: result2 })
     })
     // res.redirect('/detail/:id', { data: result })
   })
