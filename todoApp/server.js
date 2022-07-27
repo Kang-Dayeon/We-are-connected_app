@@ -171,18 +171,11 @@ app.get('/detail/:id', function (req, res) {
     db.collection('commentroom').find({ postNum: req.params.id }).toArray().then((result2) => {
       res.render('detail.ejs', { data: result, data2: result2 })
     })
-    // res.redirect('/detail/:id', { data: result })
   })
 })
-// app.get('/detail/:id', function (req, res) {
-//   db.collection('commentroom').find({ postNum: parseInt(req.params.id) }).toArray().then((result) => {
-//     console.log(result);
-//     res.render('comment.ejs', { data: result })
-//   })
-// })
 
 app.get('/mydetail/:id', loginCheck, function (req, res) {
-  db.collection('post').findOne({ postNum: parseInt(req.params.id) }, function (err, result) {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
     res.render('mypage-detail.ejs', { data: result })
   })
 })
@@ -191,9 +184,11 @@ app.get('/mydetail/:id', loginCheck, function (req, res) {
 
 //DB저장 방법 postreq
 app.post('/write', loginCheck, function (req, res) {
+  var dt = new Date();
+  var date = dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate();
   db.collection('counter').findOne({ name: '게시물갯수' }, function (err, result) {
     var totalPost = result.totalPost;
-    var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id };
+    var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id, date: date, name: req.user.name};
     db.collection('post').insertOne(userInfo, function (err, result) {
       console.log('저장완료');
       // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
@@ -206,13 +201,13 @@ app.post('/write', loginCheck, function (req, res) {
 });
 
 app.post('/comment', loginCheck, function (req, res) {
-  var commentInfo = { postNum: req.body.postNum, comment: req.body.comment, user: req.user.name, date: new Date() }
+  var dt = new Date();
+  var date = dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate();
+  var commentInfo = { postNum: req.body.postNum, comment: req.body.comment, user: req.user.name, date: date }
   db.collection('commentroom').insertOne(commentInfo, function (err, result) {
     console.log(commentInfo);
   });
-  // res.redirect('/list');
 });
-//auto increment : 글번호 달아서 저장하는것 db에 거의 다 있지만 mongoDB는 없음
 
 app.delete('/delete', function (req, res) {
   // ajax로 보내준 데이터임
