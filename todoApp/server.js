@@ -131,27 +131,6 @@ app.get('/list', function (req, res) {
 });
 
 
-
-// 댓글달기 기능
-// app.post('/commentroom', loginCheck, function (req, res) {
-//   var infoData = {
-//     title: req.body.title,
-//     member: [ObjectId(req.body.postId), req.user._id],
-//     data: new Date()
-//   }
-//   db.collection('commentroom').insertOne(infoData).then((result) => {
-//     console.log(result);
-//   }).catch((err) => {
-//     console.log(err);
-//   })
-// })
-// app.get('/comment', loginCheck, function (req, res) {
-//   db.collection('commentroom').find({ member: req.user._id }).toArray().then((result) => {
-//     res.render('comment.ejs', { data: result });
-//   });
-// });
-
-
 // 수정기능
 app.get('/edit/:id', loginCheck, function (req, res) {
   db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
@@ -185,10 +164,10 @@ app.get('/mydetail/:id', loginCheck, function (req, res) {
 //DB저장 방법 postreq
 app.post('/write', loginCheck, function (req, res) {
   var dt = new Date();
-  var date = dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate();
+  var date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
   db.collection('counter').findOne({ name: '게시물갯수' }, function (err, result) {
     var totalPost = result.totalPost;
-    var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id, date: date, name: req.user.name};
+    var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id, date: date, name: req.user.name };
     db.collection('post').insertOne(userInfo, function (err, result) {
       console.log('저장완료');
       // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
@@ -202,11 +181,12 @@ app.post('/write', loginCheck, function (req, res) {
 
 app.post('/comment', loginCheck, function (req, res) {
   var dt = new Date();
-  var date = dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate();
+  var date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
   var commentInfo = { postNum: req.body.postNum, comment: req.body.comment, user: req.user.name, date: date }
   db.collection('commentroom').insertOne(commentInfo, function (err, result) {
     console.log(commentInfo);
   });
+  res.redirect('/detail');
 });
 
 app.delete('/delete', function (req, res) {
