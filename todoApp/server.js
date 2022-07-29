@@ -30,10 +30,10 @@ app.use(passport.session());
 
 var db; //데이터 베이스를 저장하기 위한 변수
 
-MongoClient.connect(process.env.DB_URL, function (err, client) {
+MongoClient.connect(process.env.DB_URL, (err, client) => {
   //todoapp이라는 database에 연결함
   db = client.db('todoapp');
-  app.listen(8080, function () {
+  app.listen(8080, () => {
     console.log('lisening on 8080');
   });
 })
@@ -54,8 +54,8 @@ passport.use(new LocalStrategy({
   passwordField: 'pw',
   session: true,
   passReqToCallback: false,
-}, function (userId, userPw, done) {
-  db.collection('login').findOne({ id: userId }, function (err, result) {
+}, (userId, userPw, done) => {
+  db.collection('login').findOne({ id: userId }, (err, result) => {
     if (err) return done(err)
 
     if (!result) return done(null, false, { message: '존재하지않는 아이디입니다.' })
@@ -67,21 +67,21 @@ passport.use(new LocalStrategy({
   })
 }));
 // done(서버err, 성공시사용자DB데이터, 콜백함수) : 세개의 파라미터를 가짐
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id)
 });
-passport.deserializeUser(function (userId, done) {
-  db.collection('login').findOne({ id: userId }, function (err, result) {
+passport.deserializeUser((userId, done) => {
+  db.collection('login').findOne({ id: userId }, (err, result) => {
     done(null, result)
   })
 });
 // deserializeUser() : 로그인한 유저의 세션아이디를 바탕으로 개인정보를 DB에서 찾는 역할
 
 // 회원가입 기능
-app.post('/register', function (req, res) {
-  db.collection('login').findOne({ id: req.body.id }, function (err, result) {
+app.post('/register', (req, res) => {
+  db.collection('login').findOne({ id: req.body.id }, (err, result) => {
     if (result == null) {
-      db.collection('login').insertOne({ name: req.body.name, id: req.body.id, pw: req.body.pw }, function (err, result) {
+      db.collection('login').insertOne({ name: req.body.name, id: req.body.id, pw: req.body.pw }, (err, result) => {
         res.redirect('/login')
       })
     } else {
@@ -91,24 +91,33 @@ app.post('/register', function (req, res) {
 })
 
 // 로그인기능
-app.get('/login', function (req, res) {
+app.get('/login', (req, res) => {
   res.render('login.ejs')
 });
 
 app.post('/login', passport.authenticate('local', {
   failureRedirect: '/fail'
-}), function (req, res) {
+}), (req, res) => {
   res.redirect('/mypage')
 });
 
-app.get('/signup', function (req, res) {
+// logout
+app.get('/logout', (req, res) => {
+  req.logout();
+  req.session.destroy(() => {
+    res.cookie('connect.sid', '', { maxAge: 0 });
+    res.redirect('/');
+  })
+});
+
+app.get('/signup', (req, res) => {
   res.render('signup.ejs')
 });
 
 // mypage 내가 작성한 글만 보이게
-app.get('/mypage', loginCheck, function (req, res) {
+app.get('/mypage', loginCheck, (req, res) => {
   // console.log(req.user);
-  db.collection('post').find({ user: req.user._id }).toArray(function (err, result) {
+  db.collection('post').find({ user: req.user._id }).toArray((err, result) => {
     res.render('mypage.ejs', { posts: result }); //랜더링해주는 문법
   });
 });
@@ -117,44 +126,43 @@ app.get('/mypage', loginCheck, function (req, res) {
 
 
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   res.render('index.ejs');
 });
-app.get('/write', function (req, res) {
+app.get('/write', (req, res) => {
   res.render('write.ejs');
 });
 // db에서 데이터 받아서 list.ejs에 렌더링
-app.get('/list', function (req, res) {
-  db.collection('post').find().toArray(function (err, result) {
+app.get('/list', (req, res) => {
+  db.collection('post').find().toArray((err, result) => {
     res.render('list.ejs', { posts: result }); //랜더링해주는 문법
   });
 });
 
 
 // 수정기능
-app.get('/edit/:id', loginCheck, function (req, res) {
-  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
+app.get('/edit/:id', loginCheck, (req, res) => {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, (err, result) => {
     res.render('edit.ejs', { data: result })
-    // res.render('mypage-detail.ejs', { data: result })
   })
 })
 
-app.put('/edit', loginCheck, function (req, res) {
-  db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set: { title: req.body.title, text: req.body.formText } }, function (err, result) {
+app.put('/edit', loginCheck, (req, res) => {
+  db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set: { title: req.body.title, text: req.body.formText } }, (err, result) => {
     res.redirect('/list');
   })
 })
 
-app.get('/detail/:id', function (req, res) {
-  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
+app.get('/detail/:id', (req, res) => {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, (err, result) => {
     db.collection('commentroom').find({ postNum: req.params.id }).toArray().then((result2) => {
       res.render('detail.ejs', { data: result, data2: result2 })
     })
   })
 })
 
-app.get('/mydetail/:id', loginCheck, function (req, res) {
-  db.collection('post').findOne({ _id: parseInt(req.params.id) }, function (err, result) {
+app.get('/mydetail/:id', loginCheck, (req, res) => {
+  db.collection('post').findOne({ _id: parseInt(req.params.id) }, (err, result) => {
     res.render('mypage-detail.ejs', { data: result })
   })
 })
@@ -162,16 +170,16 @@ app.get('/mydetail/:id', loginCheck, function (req, res) {
 
 
 //DB저장 방법 postreq
-app.post('/write', loginCheck, function (req, res) {
+app.post('/write', loginCheck, (req, res) => {
   var dt = new Date();
   var date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
-  db.collection('counter').findOne({ name: '게시물갯수' }, function (err, result) {
+  db.collection('counter').findOne({ name: '게시물갯수' }, (err, result) => {
     var totalPost = result.totalPost;
     var userInfo = { _id: totalPost + 1, title: req.body.title, text: req.body.formText, user: req.user._id, date: date, name: req.user.name };
-    db.collection('post').insertOne(userInfo, function (err, result) {
+    db.collection('post').insertOne(userInfo, (err, result) => {
       console.log('저장완료');
       // db.collection('counter').updateOne({어떤 데이터를 수정할지},{수정값})
-      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, function (err, result) {
+      db.collection('counter').updateOne({ name: '게시물갯수' }, { $inc: { totalPost: 1 } }, (err, result) => {
         if (err) { return console.log(err) };
       });
     });
@@ -179,21 +187,20 @@ app.post('/write', loginCheck, function (req, res) {
   res.redirect('/list');
 });
 
-app.post('/comment', loginCheck, function (req, res) {
+app.post('/comment', loginCheck, (req, res) => {
   var dt = new Date();
   var date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
   var commentInfo = { postNum: req.body.postNum, comment: req.body.comment, user: req.user.name, date: date }
-  db.collection('commentroom').insertOne(commentInfo, function (err, result) {
+  db.collection('commentroom').insertOne(commentInfo, (err, result) => {
     console.log(commentInfo);
   });
-  res.redirect('/detail');
 });
 
-app.delete('/delete', function (req, res) {
+app.delete('/delete', (req, res) => {
   // ajax로 보내준 데이터임
   req.body._id = parseInt(req.body._id)
   var delData = { _id: req.body._id, user: req.user._id }
-  db.collection('post').remove(delData, function (err, result) {
+  db.collection('post').remove(delData, (err, result) => {
     console.log('삭제완료');
     res.status(200).send({ message: '성공' })
   });
@@ -221,44 +228,6 @@ app.get('/search', (req, res) => {
     res.render('result.ejs', { posts: result })
   })
 })
-
-
-// 이미지 업로드 기능 -> npm install multer
-let multer = require('multer');
-
-var path = require('path');
-const { ObjectID } = require('bson');
-
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/image')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-});
-var upload = multer({
-  storage: storage,
-  // fileFilter: function (req, file, callback) {
-  //   var ext = path.extname(file.originalname);
-  //   if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-  //     return callback(new Error('PNG, JPG만 업로드하세요'))
-  //   }
-  //   callback(null, true)
-  // },
-});
-
-app.get('/upload', function (req, res) {
-  res.render('upload.ejs');
-});
-app.post('/upload', upload.single('frofile'), function (req, res) {
-  res.send('저장완료');
-});
-app.get('/image/:imagename', function (req, res) {
-  res.sendFile(__dirname + './public/image/' + req.params.imagename)
-})
-
-
 
 
 

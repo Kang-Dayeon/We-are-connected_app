@@ -31,21 +31,19 @@
       <ul class="list-group">
         <% for (var i=0; i < posts.length; i++){ %>
           <li class="list-group-item fs-6 title fw-bold">
-            <a class="detail-anchor d-flex justify-content-between align-items-center" href="http://localhost:8080/detail/<%= posts[i]._id %>">
-              <span><%= posts[i]._id %>.<%= posts[i].title %></span>
-              <span><%= posts[i].date %></span>
+            <a class="detail-anchor d-flex justify-content-between align-items-center"
+              href="http://localhost:8080/detail/<%= posts[i]._id %>">
+              <span>
+                <%= posts[i]._id %>.<%= posts[i].title %>
+              </span>
+              <span>
+                <%= posts[i].date %>
+              </span>
             </a>
-            <!-- <div>
-              <button class="btn btn-sm comment btn-outline-dark" data-id="<%= posts[i].user %>"
-                data-title="<%= posts[i].title %>">Comment</button>
-              <button class="btn btn-outline-secondary btn-sm delete" data-id="<%= posts[i]._id %>">Del</button>
-            </div> -->
           </li>
           <% } %>
-        </ul>
+      </ul>
     </div>
-
-
 
 
 
@@ -53,19 +51,6 @@
 
     <script>
       $(document).ready(function () {
-        // $('.delete').click(function (e) {
-        //   var postNum = e.target.dataset.id;
-        //   var 지금누른것 = $(this);
-        //   $.ajax({
-        //     method: 'DELETE',
-        //     url: '/delete',
-        //     data: { _id: postNum }
-        //   }).done(function (결과) {
-        //     지금누른것.parent('li').remove();
-        //   }).fail(function () {
-        //     alert("삭제 실패")
-        //   });
-        // });
 
         $('#search').click(function () {
           var inputVal = $("#searchInput").val();
@@ -93,7 +78,6 @@
 
 
       });
-      // window.location.replace('url') : url을 바꿔주는 문법
 
     // ajax 기본 문법
     // $.ajax({
