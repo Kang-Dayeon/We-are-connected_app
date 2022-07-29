@@ -56,12 +56,12 @@
               </li>
               <% } %>
           </ul>
-          <form action="/comment" method="POST">
+          <form action="/comment" method="POST" id="comment-form">
             <div class="input-group mt-3">
               <input value="<%= data._id %>" name="postNum" style="display:none;">
               <input name="comment" type="text" class="form-control" placeholder="Write your commnet"
                 aria-label="Recipient's username" aria-describedby="button-addon2">
-              <button class="btn btn-outline-secondary comment-btn" type="submit" id="button-addon2">Push</button>
+              <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Push</button>
             </div>
           </form>
         </div>
@@ -69,22 +69,6 @@
 
     </div>
 
-    <script>
-      $.ajax({
-        method: 'GET',
-        url: '/detail/:id'
-      }).done(function (결과) {
-        console.log(결과);
-      }).fail(function (xhr, textStatus, errorThrown) {
-        console.log(xhr, textStatus, errorThrown);
-        alert('없는 페이지 입니다')
-      });
-
-      $('.comment-btn').click(function () {
-        location.reload();
-      })
-
-    </script>
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"

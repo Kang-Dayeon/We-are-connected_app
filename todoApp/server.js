@@ -188,12 +188,14 @@ app.post('/write', loginCheck, (req, res) => {
 });
 
 app.post('/comment', loginCheck, (req, res) => {
+  var postNum = parseInt(req.body.postNum);
   var dt = new Date();
   var date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
   var commentInfo = { postNum: req.body.postNum, comment: req.body.comment, user: req.user.name, date: date }
   db.collection('commentroom').insertOne(commentInfo, (err, result) => {
-    console.log(commentInfo);
+    console.log('저장완료');
   });
+  res.redirect('/detail/' + postNum)
 });
 
 app.delete('/delete', (req, res) => {
