@@ -12,6 +12,9 @@ a:hover {
   text-decoration: none;
   color: black;
 }
+input:focus{
+  outline: nones;
+}
 input.error{
   border: 1px solid red;
 }
