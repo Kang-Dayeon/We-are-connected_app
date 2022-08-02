@@ -27,10 +27,12 @@
             aria-describedby="emailHelp" name="title" value="<%= data.title %>">
         </div>
         <div class="mb-3">
-          <input type="text" class="form-control bg-body rounded p-2" id="exampleFormControlTextarea1" name="formText"
-            value="<%= data.text %>">
+          <textarea class="form-control bg-body rounded p-2" id="exampleFormControlTextarea1"
+            name="formText"><%= data.text %></textarea>
         </div>
-        <button type="submit" class="btn btn-outline-dark">SAVE</button>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-outline-dark">SAVE</button>
+        </div>
       </form>
     </div>
 

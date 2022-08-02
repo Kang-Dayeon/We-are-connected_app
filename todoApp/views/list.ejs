@@ -28,14 +28,17 @@
         <input class="form-control" id="searchInput">
         <button class="input-group-append btn btn-outline-dark" id="search">검색</button>
       </div>
-      <ul class="list-group">
+      <ul class="list-group list-group-flush">
         <% for (var i=0; i < posts.length; i++){ %>
-          <li class="list-group-item fs-6 title">
+          <li class="list-group-item fs-6 title bg-transparent">
             <a class="detail-anchor d-flex justify-content-between align-items-center"
               href="http://localhost:8080/detail/<%= posts[i]._id %>">
-              <span>
-                <%= posts[i]._id %>.&nbsp;&nbsp;<%= posts[i].title %>
-              </span>
+              <div>
+                <span>
+                  <%= posts[i]._id %>
+                  &nbsp;&nbsp;<%= posts[i].title %>
+                </span>
+              </div>
               <span>
                 <%= posts[i].date %>
               </span>

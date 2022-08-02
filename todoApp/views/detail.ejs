@@ -22,9 +22,9 @@
     <div class="container-md mt-2">
       <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">
+          <h6 class="mb-0">
             <%= data.title %>
-          </h5>
+          </h6>
           <p class="card-text"><small class="text-muted">
               <%= data.name %>&nbsp;&#124;&nbsp;<%= data.date %>
             </small></p>
@@ -61,13 +61,26 @@
               <input value="<%= data._id %>" name="postNum" style="display:none;">
               <input name="comment" type="text" class="form-control" placeholder="Write your commnet"
                 aria-label="Recipient's username" aria-describedby="button-addon2">
-              <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Push</button>
+              <button class="btn btn-outline-dark push-btn" type="submit" id="button-addon2" disabled>Push</button>
             </div>
           </form>
         </div>
       </div>
 
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        var loginCheck = localStorage.getItem('login-check')
+        if (loginCheck) {
+          $('.push-btn').attr('disabled', false);
+        } else {
+          $('.push-btn').attr('disabled', true);
+        }
+      });
+    </script>
 
 
     <!-- JavaScript Bundle with Popper -->
