@@ -2,6 +2,16 @@
 
 node.js를 활용하여 자유롭게 자신의 아이디어를 공유할 수 있는 앱입니다.<br />
 <br />
+💡 Start<br />
+ > npm install<br />
+ > node server.js<br />
+<br />
+🛠 Stacks<br />
+✦ UI : bootstrap<br />
+✦ Front-end : ejs, javascript, jQuery<br />
+✦ Back-end : node.js, express<br />
+✦ DB : MongoDB<br />
+<br />
 📌 pages<br />
 ✦ Home : 메인 페이지에서는 NASA의 api를 활용하여 NASA에서 매일 다르게 제공하고 있는 우주의 사진과 포스팅을 보여주었습니다.<br />
 ✦ Write : 나의 아이디어를 자유롭게 작성 할 수 있는 페이지 입니다. 간단한 ui로 제목과 내용을 입력하여 게시물을 업로드 할 수 있습니다.<br />
