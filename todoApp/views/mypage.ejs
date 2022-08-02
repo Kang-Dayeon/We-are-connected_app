@@ -24,10 +24,14 @@
     <!-- ejs 문법: <% %>여기 안은 자바스크립트 문법을 실행하는 곳임 -->
     <div class="container-md mt-2">
       <h2 class="fs-4 fw-bold text-center">My Post List <i class="bi bi-tsunami"></i></h2>
-      <p class="text-center mt-5 fs-6">아직 게시물이 없어요.<br /> 게시물을 작성 해 주세요🙏</p>
-      <ul class="list-group">
+      <div class="mt-5 no-post text-center ">
+        <div class="p-3 fs-1"><i class="bi bi-patch-check"></i></div>
+        <p class="fs-6">아직 게시물이 없어요.<br /> 게시물을 작성 해 주세요!</p>
+        <a href="/write" class="btn btn-outline-dark btn-sm">Write <i class="bi bi-pencil-fill"></i></a>
+      </div>
+      <ul class="list-group list-group-flush mt-2">
         <% for (var i=0; i < posts.length; i++){ %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
+          <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
             <a class="detail-anchor" href="http://localhost:8080/mydetail/<%= posts[i]._id %>">
               <h6 class="fs-6 title fw-bold">
                 <%= posts[i].title %>
@@ -62,6 +66,11 @@
             alert("삭제 실패")
           });
         });
+        if($('.list-group-item').length > 0){
+          $('.no-post').css('display', 'none');
+        } else {
+          $('.no-post').css('display', 'block');
+        }
 
       });
 
