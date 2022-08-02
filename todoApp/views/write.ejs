@@ -29,9 +29,24 @@
           <textarea placeholder="text" class="form-control bg-body rounded p-2" id="exampleFormControlTextarea1"
             name="formText"></textarea>
         </div>
-        <button type="submit" class="btn btn-outline-dark">SAVE</button>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-outline-dark" id="save-btn">SAVE</button>
+        </div>
       </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        var loginCheck = localStorage.getItem('login-check')
+        if (loginCheck) {
+          $('#save-btn').attr('disabled', false);
+        } else {
+          $('#save-btn').attr('disabled', true);
+        }
+      });
+    </script>
 
 
     <!-- JavaScript Bundle with Popper -->
