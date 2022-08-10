@@ -20,7 +20,8 @@
   <%- include('nav.ejs') %>
 
     <div class="card">
-      <img src="..." class="card-img-top main-img" alt="...">
+      <!-- <img class="card-img-top main-img" alt="nasa image" onerror="this.style.display='none'"> -->
+      <iframe class="card-img-top main-item" height="500"></iframe>
       <div class="card-body">
         <h5 class="card-title">Today Space🪐</h5>
         <h5 class="card-title title"></h5>
@@ -38,12 +39,13 @@
           url: "https://api.nasa.gov/planetary/apod?api_key=jeGCYNYryCQIX7GEB3XhH3OZ5iW8QTktZ7wbPjfX",
           success: function (data) {
             console.log(data);
-            $('.main-img').attr('src', data.url)
+            // $('.main-img').attr('src', data.url)
+            $('.main-item').attr('src', data.url)
             $('.title').text(data.title)
             $('.explanation').text(data.explanation)
             $('.card-date').text(data.date)
           }
-        })
+        });
       });
     </script>
 
