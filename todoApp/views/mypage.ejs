@@ -32,7 +32,7 @@
       <ul class="list-group list-group-flush mt-2">
         <% for (var i=0; i < posts.length; i++){ %>
           <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
-            <a class="detail-anchor" href="http://localhost:8080/mydetail/<%= posts[i]._id %>">
+            <a class="detail-anchor" href="https://dotted-furnace-360604.du.r.appspot.com/mydetail/<%= posts[i]._id %>">
               <h6 class="fs-6 title fw-bold">
                 <%= posts[i].title %>
               </h6>
@@ -66,7 +66,7 @@
             alert("삭제 실패")
           });
         });
-        if($('.list-group-item').length > 0){
+        if ($('.list-group-item').length > 0) {
           $('.no-post').css('display', 'none');
         } else {
           $('.no-post').css('display', 'block');
