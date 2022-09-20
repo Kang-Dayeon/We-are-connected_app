@@ -1,6 +1,6 @@
 # We are connected app💫
 
-node.js를 활용하여 자유롭게 자신의 아이디어를 공유할 수 있는 앱입니다.<br />
+node.js를 활용하여 만든 자유롭게 자신의 아이디어를 공유할 수 있는 앱입니다.<br />
 <br />
 💡 Start<br />
  > npm install<br />
