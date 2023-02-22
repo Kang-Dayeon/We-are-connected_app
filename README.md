@@ -1,6 +1,6 @@
 # We are connected app💫
 
-node.js를 활용하여 만든 자유롭게 자신의 아이디어를 공유할 수 있는 앱입니다.<br />
+This is an app that allows you to freely share your ideas using node.js.<br />
 <br />
 💡 Start<br />
  > npm install<br />
@@ -13,12 +13,12 @@ node.js를 활용하여 만든 자유롭게 자신의 아이디어를 공유할 
 ✦ DB : MongoDB<br />
 <br />
 📌 pages<br />
-✦ Home : 메인 페이지에서는 NASA의 api를 활용하여 NASA에서 매일 다르게 제공하고 있는 우주의 사진과 포스팅을 보여주었습니다.<br />
-✦ Write : 나의 아이디어를 자유롭게 작성 할 수 있는 페이지 입니다. 간단한 ui로 제목과 내용을 입력하여 게시물을 업로드 할 수 있습니다.<br />
-✦ Idea List : 사용자들이 작성한 게시물 리스트를 볼 수 있는 페이지 입니다. 제목 클릭시 상세 페이지로 이동합니다. 상단 검색창으로 원하는 컨텐츠를 검색 할 수 있습니다.<br />
-✦ Mypage : 내가 작성한 글을 확인하고 삭제하거나 수정 할 수 있는 페이지 입니다.<br />
-✦ Login : 로그인 페이지로 아이디가 없을시엔 sign up 버튼을 클릭하여 회원가입 페이지로 이동 할 수 있습니다.<br />
-✦ Logout : 클릭시 로그인 세션을 삭제하며 로그아웃 됩니다.<br />
-✦ Sign up : 회원가입 페이지 입니다. 간단한 정보를 입력하여 회원가입 할 수 있습니다. 보안을 위해 정규식을 사용했습니다.<br />
-✦ Detail : 게시물의 제목을 클릭하면 보여지는 상세 페이지 입니다. 게시물의 내용을 볼 수 있고, 댓글을 달며 의견을 나눌 수 있습니다.<br />
+✦ Home : On the main page, NASA's api was used to show pictures and postings of the universe that NASA provides differently every day.<br />
+✦ Write : This is a page where you can freely write your ideas. You can upload a post by entering the title and content with a simple ui.<br />
+✦ Idea List : This is a page where you can see a list of posts created by users. Click on the title to go to the detail page. You can search for the content you want with the search bar at the top.<br />
+✦ Mypage : This is a page where you can check, delete or edit your writing.<br />
+✦ Login : This is the login page. If you do not have an ID, you can click the sign up button to go to the membership registration page.<br />
+✦ Logout : When clicked, the login session is deleted and logged out.<br />
+✦ Sign up : This is the membership registration page. You can register as a member by entering simple information. I used regular expressions for security.<br />
+✦ Detail : This is the detail page that is displayed when you click the post title. You can view the content of posts, comment on them, and share your thoughts.<br />
 
